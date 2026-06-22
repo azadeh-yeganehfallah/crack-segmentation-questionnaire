@@ -5,7 +5,8 @@ from datetime import datetime
 import uuid
 import random
 import json
-
+import gspread
+from google.oauth2.service_account import Credentials
 
 st.set_page_config(
     page_title="Crack Segmentation Questionnaire",
@@ -34,6 +35,28 @@ div[role="radiogroup"] input {
 
 DATA_DIR = Path("images")
 RESPONSE_FILE = Path("responses.csv")
+
+
+def connect_to_google_sheet():
+
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
+    )
+
+    client = gspread.authorize(creds)
+
+    sheet = client.open("crack_questionnaire_responses").sheet1
+
+    return sheet
+
+
+
 
 REAL_MODELS = ["model_01", "model_02", "model_03", "model_04", "model_05"]
 DISPLAY_LABELS = ["A", "B", "C", "D", "E"]
@@ -239,12 +262,12 @@ if submitted:
 
         rows.append({
             "timestamp": datetime.now().isoformat(),
-            "participant_id": participant_identifier,
+            "participant": participant_identifier,
             "degree": degree,
             "role": role,
             "country": country,
             "inspection_experience": inspection_experience,
-            "experience (years)": experience,
+            "experience_years": experience,
             "case": case,
             "best_prediction_label": best_label,
             "best_prediction_model": best_model,
@@ -253,12 +276,45 @@ if submitted:
             "mapping": mapping_json
         })
 
-    df = pd.DataFrame(rows)
+    try:
+        sheet = connect_to_google_sheet()
 
-    if RESPONSE_FILE.exists():
-        old_df = pd.read_csv(RESPONSE_FILE)
-        df = pd.concat([old_df, df], ignore_index=True)
+        if len(sheet.get_all_values()) == 0:
+            sheet.append_row([
+                "timestamp",
+                "participant",
+                "degree",
+                "role",
+                "country",
+                "inspection_experience",
+                "experience_years",
+                "case",
+                "best_prediction_label",
+                "best_prediction_model",
+                "acceptable_prediction_labels",
+                "acceptable_prediction_models",
+                "mapping"
+            ])
 
-    df.to_csv(RESPONSE_FILE, index=False)
+        for row in rows:
+            sheet.append_row([
+                row["timestamp"],
+                row["participant"],
+                row["degree"],
+                row["role"],
+                row["country"],
+                row["inspection_experience"],
+                row["experience_years"],
+                row["case"],
+                row["best_prediction_label"],
+                row["best_prediction_model"],
+                row["acceptable_prediction_labels"],
+                row["acceptable_prediction_models"],
+                row["mapping"]
+            ])
 
-    st.success("Thank you. Your responses have been submitted successfully.")
+        st.success("Thank you. Your responses have been submitted successfully.")
+
+    except Exception as e:
+        st.error("There was an error while saving your responses.")
+        st.exception(e)
