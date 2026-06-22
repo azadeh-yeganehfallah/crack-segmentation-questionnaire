@@ -17,28 +17,38 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+/* حذف دایره فوکوس و خطوط اضافه دور دکمه‌ها */
+div[data-testid="stButton"] button:focus,
+div[data-testid="stButton"] button:active,
+div[data-testid="stButton"] button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
 
 div[data-testid="stButton"] button {
-    font-size: 28px !important;
+    font-size: 24px !important;
     font-weight: 700 !important;
     border: none !important;
     background: transparent !important;
     color: #1f2937 !important;
     padding: 0 !important;
     margin-bottom: 8px !important;
+    text-align: left !important;
 }
 
 div[data-testid="stButton"] button:hover {
     color: #0078D4 !important;
+    background: transparent !important;
 }
 
 div[data-testid="stButton"] button p {
-    font-size: 28px !important;
+    font-size: 24px !important;
     font-weight: 700 !important;
 }
-
 </style>
 """, unsafe_allow_html=True)
+
 
 
 DATA_DIR = Path("images")
@@ -214,6 +224,7 @@ for case in CASES:
                         key=f"select_{case}_{label}"
                     ):
                         st.session_state[f"best_selected_{case}"] = label
+                        st.rerun()
 
                     if img_path.exists():
                         st.markdown(
