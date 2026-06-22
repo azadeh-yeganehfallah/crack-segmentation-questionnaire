@@ -227,41 +227,33 @@ for case in CASES:
                         st.warning(f"Missing original image: {img_path}")
 
                 else:
-
                     selected = st.session_state.get(f"best_selected_{case}") == label
 
-                    title_color = "#0078D4" if selected else "#1f2937"
-                    border = "7px solid #0078D4" if selected else "2px solid #dddddd"
+                    # Determine CSS class based on selection state
+                    card_class = "selected-card" if selected else "normal-card"
+                    icon = "🟢" if selected else "⚪"  # Use minimal icons instead of old text labels
 
-                    button_text = f"Prediction {label}  ✓" if selected else f"Prediction {label}  □"
-
-                    if st.button(
-                        button_text,
-                        key=f"select_{case}_{label}"
-                    ):
-                        st.session_state[f"best_selected_{case}"] = label
-                        st.rerun()
-
+                    # Create a clean, unified, fully clickable card
                     if img_path.exists():
-                        st.markdown(
-                            f"""
-                            <div style="
-                                border:{border};
-                                border-radius:10px;
-                                padding:4px;
-                                display:inline-block;
-                                margin-bottom:10px;
-                            ">
-                            """,
-                            unsafe_allow_html=True
-                        )
+                        with open(img_path, "rb") as image_file:
 
-                        st.image(str(img_path), width=320)
+                            # Render the custom-styled button
+                            if st.button(
+                                f"{icon} Prediction {label}",
+                                key=f"select_{case}_{label}"
+                            ):
+                                st.session_state[f"best_selected_{case}"] = label
+                                st.rerun()
 
-                        st.markdown("</div>", unsafe_allow_html=True)
-
+                            # Display image with a border that changes based on selection state
+                            st.markdown(f"""
+                                <div class="{card_class}">
+                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:6px; display:block;">
+                                </div>
+                            """, unsafe_allow_html=True)
                     else:
                         st.warning(f"Missing overlay: {img_path}")
+
 
           
 
