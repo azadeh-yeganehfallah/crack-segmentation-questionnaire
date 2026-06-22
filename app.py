@@ -20,42 +20,18 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Hide empty radio text */
-div[class*="st-key-best_radio_"] label p {
-    display: none !important;
-}
-
-/* Move radio next to Prediction title */
-div[class*="st-key-best_radio_"] {
-    margin-top: -50px;
-    margin-left: 170px;
-    margin-bottom: 22px;
-    width: 55px;
-}
-
-/* Make radio bigger and more visible */
-            
-div[class*="st-key-best_radio_"] input[type="radio"] {
-    transform: scale(3);
-    accent-color: #1f3ab5;
-    cursor: pointer;
-    filter: contrast(1.4);
-}
-
-
-/* Compact radio group */
-div[class*="st-key-best_radio_"] div[role="radiogroup"] {
-    width: 55px;
-}
-
-/* Prediction title */
 .prediction-title {
     font-size: 28px;
     font-weight: 700;
+    margin-bottom: 8px;
 }
 
-.prediction-title-row {
-    margin-bottom: 8px;
+.selected-title {
+    color: #0078D4;
+}
+
+.unselected-title {
+    color: #1f2937;
 }
 
 </style>
@@ -113,6 +89,8 @@ def image_to_base64(path):
     with open(path, "rb") as f:
         data = base64.b64encode(f.read()).decode()
     return f"data:image/png;base64,{data}"
+
+
 
 if "participant_id" not in st.session_state:
     st.session_state.participant_id = str(uuid.uuid4())
@@ -238,18 +216,17 @@ for case in CASES:
                     )
 
                     tick = " ✅" if selected else ""
+                    title_class = "selected-title" if selected else "unselected-title"
 
-                    title_color = "#0078D4" if selected else "#1f2937"
-                    border = "6px solid #0078D4" if selected else "2px solid #dddddd"
+                    border = (
+                        "7px solid #0078D4"
+                        if selected
+                        else "2px solid #dddddd"
+                    )
 
                     st.markdown(
                         f"""
-                        <div style="
-                            font-size:28px;
-                            font-weight:700;
-                            color:{title_color};
-                            margin-bottom:8px;
-                        ">
+                        <div class="prediction-title {title_class}">
                             Prediction {label}{tick}
                         </div>
                         """,
@@ -258,11 +235,12 @@ for case in CASES:
 
                     if img_path.exists():
                         clicked = clickable_images(
-                            paths=[image_to_base64(img_path)],
+                            paths=[image_to_base64(str(img_path))],
                             titles=[f"Prediction {label}"],
                             div_style={
                                 "display": "flex",
-                                "justify-content": "flex-start"
+                                "justify-content": "flex-start",
+                                "margin-bottom": "10px"
                             },
                             img_style={
                                 "width": "320px",
@@ -275,8 +253,8 @@ for case in CASES:
                         )
 
                         if clicked == 0:
-                            select_best(case, label)
-                            st.rerun()
+                            if st.session_state.get(f"best_selected_{case}") != label:
+                                select_best(case, label)
 
                     else:
                         st.warning(f"Missing overlay: {img_path}")
