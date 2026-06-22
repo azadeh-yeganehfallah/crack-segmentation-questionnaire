@@ -1,0 +1,4 @@
+.venv/
+responses.csv
+.streamlit/secrets.toml
+__pycache__/
