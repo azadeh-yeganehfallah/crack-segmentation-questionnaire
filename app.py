@@ -30,11 +30,14 @@ div[class*="st-key-best_radio_"] {
 }
 
 /* Make radio bigger and more visible */
+            
 div[class*="st-key-best_radio_"] input[type="radio"] {
-    transform: scale(3.2);
+    transform: scale(3);
+    accent-color: #1f3ab5;
     cursor: pointer;
-    accent-color: #0066cc;
+    filter: contrast(1.4);
 }
+
 
 /* Compact radio group */
 div[class*="st-key-best_radio_"] div[role="radiogroup"] {
