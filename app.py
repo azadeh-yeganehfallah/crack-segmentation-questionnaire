@@ -16,32 +16,17 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Participant radio */
-div[class*="st-key-inspection_experience"] div[role="radiogroup"] label,
-div[class*="st-key-inspection_experience"] div[role="radiogroup"] label p {
-    font-size: 22px !important;
-    font-weight: 600 !important;
+/* Image radio buttons next to Prediction title */
+div[class*="st-key-best_radio_"] div[role="radiogroup"] {
+    justify-content: flex-end;
 }
 
-div[class*="st-key-inspection_experience"] input[type="radio"] {
-    transform: scale(1.8);
-}
-
-
-/* Image radios: A, B, C, D, E */
-div[class*="st-key-best_radio_"] div[role="radiogroup"] label,
-div[class*="st-key-best_radio_"] div[role="radiogroup"] label p {
-    font-size: 30px !important;
-    font-weight: 700 !important;
+div[class*="st-key-best_radio_"] label p {
+    display: none !important;
 }
 
 div[class*="st-key-best_radio_"] input[type="radio"] {
-    transform: scale(2.2);
-    margin-right: 10px;
-}
-
-div[class*="st-key-best_radio_"] div[role="radiogroup"] {
-    justify-content: center;
+    transform: scale(1.8);
 }
 
 </style>
@@ -214,7 +199,22 @@ for case in CASES:
                         st.warning(f"Missing original image: {img_path}")
 
                 else:
-                    st.markdown(f"### Prediction {label}")
+                    title_col, radio_col = st.columns([0.85, 0.15])
+
+                    with title_col:
+                        st.markdown(f"### Prediction {label}")
+
+                    with radio_col:
+                        st.radio(
+                            label="",
+                            options=[""],
+                            key=f"best_radio_{case}_{label}",
+                            index=None,
+                            horizontal=True,
+                            label_visibility="collapsed",
+                            on_change=select_best,
+                            args=(case, label)
+                        )
 
                     if img_path.exists():
                         st.image(
@@ -223,22 +223,7 @@ for case in CASES:
                         )
                     else:
                         st.warning(f"Missing overlay: {img_path}")
-
-
-                
-
-                    st.radio(
-                        label="",
-                        options=[label],
-                        key=f"best_radio_{case}_{label}",
-                        index=None,
-                        horizontal=True,
-                        label_visibility="collapsed",
-                        on_change=select_best,
-                        args=(case, label)
-                    )
-
-                  
+           
 
     best_choice = st.session_state.get(
         f"best_selected_{case}",
