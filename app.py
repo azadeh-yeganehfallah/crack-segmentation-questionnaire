@@ -7,8 +7,8 @@ import random
 import json
 import gspread
 from google.oauth2.service_account import Credentials
-import base64
-from st_clickable_images import clickable_images
+# import base64
+# from st_clickable_images import clickable_images
 
 
 
@@ -85,10 +85,10 @@ MODEL_FILES = {
 
 
 
-def image_to_base64(path):
-    with open(path, "rb") as f:
-        data = base64.b64encode(f.read()).decode()
-    return f"data:image/png;base64,{data}"
+# def image_to_base64(path):
+#     with open(path, "rb") as f:
+#         data = base64.b64encode(f.read()).decode()
+#     return f"data:image/png;base64,{data}"
 
 
 
@@ -216,17 +216,17 @@ for case in CASES:
                     )
 
                     tick = " ✅" if selected else ""
-                    title_class = "selected-title" if selected else "unselected-title"
-
-                    border = (
-                        "7px solid #0078D4"
-                        if selected
-                        else "2px solid #dddddd"
-                    )
+                    title_color = "#0078D4" if selected else "#1f2937"
+                    border = "7px solid #0078D4" if selected else "2px solid #dddddd"
 
                     st.markdown(
                         f"""
-                        <div class="prediction-title {title_class}">
+                        <div style="
+                            font-size:28px;
+                            font-weight:700;
+                            color:{title_color};
+                            margin-bottom:8px;
+                        ">
                             Prediction {label}{tick}
                         </div>
                         """,
@@ -234,27 +234,28 @@ for case in CASES:
                     )
 
                     if img_path.exists():
-                        clicked = clickable_images(
-                            paths=[image_to_base64(str(img_path))],
-                            titles=[f"Prediction {label}"],
-                            div_style={
-                                "display": "flex",
-                                "justify-content": "flex-start",
-                                "margin-bottom": "10px"
-                            },
-                            img_style={
-                                "width": "320px",
-                                "border": border,
-                                "border-radius": "10px",
-                                "padding": "4px",
-                                "cursor": "pointer"
-                            },
-                            key=f"click_img_{case}_{label}"
+                        st.markdown(
+                            f"""
+                            <div style="
+                                border:{border};
+                                border-radius:10px;
+                                padding:4px;
+                                display:inline-block;
+                            ">
+                            """,
+                            unsafe_allow_html=True
                         )
 
-                        if clicked == 0:
-                            if st.session_state.get(f"best_selected_{case}") != label:
-                                select_best(case, label)
+                        st.image(str(img_path), width=320)
+
+                        st.markdown("</div>", unsafe_allow_html=True)
+
+                        if st.button(
+                            f"Select Prediction {label}",
+                            key=f"select_{case}_{label}",
+                            use_container_width=True
+                        ):
+                            select_best(case, label)
 
                     else:
                         st.warning(f"Missing overlay: {img_path}")
