@@ -7,8 +7,6 @@ import random
 import json
 import gspread
 from google.oauth2.service_account import Credentials
-# import base64
-# from st_clickable_images import clickable_images
 
 
 
@@ -34,9 +32,18 @@ st.markdown("""
     color: #1f2937;
 }
 
+/* Select buttons */
+
+div[data-testid="stButton"] button {
+    height: 40px;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 2px solid #0078D4;
+    color: #0078D4;
+}
+
 </style>
 """, unsafe_allow_html=True)
-
 
 
 DATA_DIR = Path("images")
@@ -83,12 +90,6 @@ MODEL_FILES = {
 }
 
 
-
-
-# def image_to_base64(path):
-#     with open(path, "rb") as f:
-#         data = base64.b64encode(f.read()).decode()
-#     return f"data:image/png;base64,{data}"
 
 
 
@@ -215,23 +216,35 @@ for case in CASES:
                         st.session_state.get(f"best_selected_{case}") == label
                     )
 
-                    tick = " ✅" if selected else ""
                     title_color = "#0078D4" if selected else "#1f2937"
                     border = "7px solid #0078D4" if selected else "2px solid #dddddd"
 
-                    st.markdown(
-                        f"""
-                        <div style="
-                            font-size:28px;
-                            font-weight:700;
-                            color:{title_color};
-                            margin-bottom:8px;
-                        ">
-                            Prediction {label}{tick}
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
+                    title_col, button_col = st.columns([0.78, 0.22])
+
+                    with title_col:
+                        st.markdown(
+                            f"""
+                            <div style="
+                                font-size:28px;
+                                font-weight:700;
+                                color:{title_color};
+                                margin-bottom:8px;
+                            ">
+                                Prediction {label}
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+
+                    with button_col:
+                        button_text = "✓" if selected else "Select"
+
+                        if st.button(
+                            button_text,
+                            key=f"select_{case}_{label}",
+                            use_container_width=True
+                        ):
+                            st.session_state[f"best_selected_{case}"] = label
 
                     if img_path.exists():
                         st.markdown(
@@ -241,6 +254,7 @@ for case in CASES:
                                 border-radius:10px;
                                 padding:4px;
                                 display:inline-block;
+                                margin-bottom:10px;
                             ">
                             """,
                             unsafe_allow_html=True
@@ -249,13 +263,6 @@ for case in CASES:
                         st.image(str(img_path), width=320)
 
                         st.markdown("</div>", unsafe_allow_html=True)
-
-                        if st.button(
-                            f"Select Prediction {label}",
-                            key=f"select_{case}_{label}",
-                            use_container_width=True
-                        ):
-                            select_best(case, label)
 
                     else:
                         st.warning(f"Missing overlay: {img_path}")
