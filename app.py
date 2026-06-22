@@ -17,15 +17,16 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/*deletion */
-div[data-testid="stButton"] button {
-    font-size: 20px !important;
-    font-weight: 600 !important;
+
+h3, div[data-testid="stButton"] button {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #1f2937 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.4 !important;
     border: none !important;
     background: transparent !important;
-    color: #1f2937 !important;
-    padding: 0 !important;
-    margin-bottom: 4px !important;
     text-align: left !important;
 }
 
@@ -33,33 +34,47 @@ div[data-testid="stButton"] button:hover {
     color: #0078D4 !important;
 }
 
-/* normal card */
+
+.original-card, .normal-card, .selected-card {
+    border-radius: 8px;
+    padding: 6px; 
+    margin-top: 8px;
+    margin-bottom: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* original case */
+.original-card {
+    border: 2px solid #d1d5db;
+    background-color: #f9fafb;
+}
+
+/*normal case */
 .normal-card {
     border: 2px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 6px;
     background-color: #ffffff;
-    transition: all 0.2s ease-in-out;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
 }
 
 .normal-card:hover {
     border-color: #a3b8cc;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.08);
 }
 
-/* selected frame*/
+/*selected case */
 .selected-card {
     border: 3px solid #0078D4;
-    border-radius: 10px;
-    padding: 5px;
     background-color: #f0f7ff;
-    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
-    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.15);
+}
+
+/* remving margin*/
+div[data-testid="stButton"] {
+    margin-bottom: 0px !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 
@@ -205,8 +220,10 @@ for case in CASES:
         overlay_path = case_dir / MODEL_FILES[real_model]["overlay"]
         items.append((label, overlay_path))
 
-    NUM_COLS = 3
 
+    
+
+    NUM_COLS = 3
     for start in range(0, len(items), NUM_COLS):
         row_items = items[start:start + NUM_COLS]
         cols = st.columns(NUM_COLS)
@@ -214,42 +231,81 @@ for case in CASES:
         for idx, (label, img_path) in enumerate(row_items):
             with cols[idx]:
                 if label == "Original":
-                    st.subheader(f"Original image: {case}")
+    
+                    st.markdown(f"### 📷 Original: {case}")
+                    
                     if img_path.exists():
-                        st.image(
-                            str(img_path),
-                            width=320
-                        )
+    
+                        st.markdown('<div class="original-card">', unsafe_allow_html=True)
+                        st.image(str(img_path), use_container_width=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
                     else:
                         st.warning(f"Missing original image: {img_path}")
 
                 else:
-
                     selected = st.session_state.get(f"best_selected_{case}") == label
-                    
-                   
                     card_class = "selected-card" if selected else "normal-card"
-                    icon = "🟢" if selected else "⚪"  
+                    icon = "🟢" if selected else "⚪"
 
-                
+    
+                    if st.button(f"{icon} Prediction {label}", key=f"select_{case}_{label}"):
+                        st.session_state[f"best_selected_{case}"] = label
+                        st.rerun()
+
                     if img_path.exists():
-                        with open(img_path, "rb") as image_file:
-                          
-                            if st.button(
-                                f"{icon} Prediction {label}", 
-                                key=f"select_{case}_{label}"
-                            ):
-                                st.session_state[f"best_selected_{case}"] = label
-                                st.rerun()
-
-                           
-                            st.markdown(f"""
-                                <div class="{card_class}">
-                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:6px; display:block;">
-                                </div>
-                            """, unsafe_allow_html=True)
+    
+                        st.markdown(f'<div class="{card_class}">', unsafe_allow_html=True)
+                        st.image(str(img_path), use_container_width=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
                     else:
                         st.warning(f"Missing overlay: {img_path}")
+
+
+    # # NUM_COLS = 3
+
+    # # for start in range(0, len(items), NUM_COLS):
+    # #     row_items = items[start:start + NUM_COLS]
+    # #     cols = st.columns(NUM_COLS)
+
+    # #     for idx, (label, img_path) in enumerate(row_items):
+    # #         with cols[idx]:
+    # #             if label == "Original":
+    # #                 st.subheader(f"Original image: {case}")
+    # #                 if img_path.exists():
+    # #                     st.image(
+    # #                         str(img_path),
+    # #                         width=320
+    # #                     )
+    # #                 else:
+    # #                     st.warning(f"Missing original image: {img_path}")
+
+    # #             else:
+
+    # #                 selected = st.session_state.get(f"best_selected_{case}") == label
+                    
+                   
+    # #                 card_class = "selected-card" if selected else "normal-card"
+    # #                 icon = "🟢" if selected else "⚪"  
+
+                
+    # #                 if img_path.exists():
+    # #                     with open(img_path, "rb") as image_file:
+                          
+    # #                         if st.button(
+    # #                             f"{icon} Prediction {label}", 
+    # #                             key=f"select_{case}_{label}"
+    # #                         ):
+    # #                             st.session_state[f"best_selected_{case}"] = label
+    # #                             st.rerun()
+
+                           
+    # #                         st.markdown(f"""
+    # #                             <div class="{card_class}">
+    # #                                 <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:6px; display:block;">
+    # #                             </div>
+    # #                         """, unsafe_allow_html=True)
+    # #                 else:
+    # #                     st.warning(f"Missing overlay: {img_path}")
 
                     # selected = st.session_state.get(f"best_selected_{case}") == label
 
