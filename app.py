@@ -14,81 +14,48 @@ st.set_page_config(
     page_title="Crack Segmentation Questionnaire",
     layout="wide"
 )
-
 st.markdown("""
 <style>
-/* Reset and completely hide native Streamlit button lines/borders */
-div[data-testid="stButton"] {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 0px !important;
-}
-
+/* Remove all default button styling */
 div[data-testid="stButton"] button {
-    position: relative;
-    top: -38px;
-    width: 100% !important;
-    height: 35px !important;
-    background: transparent !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
     border: none !important;
-    color: transparent !important;
-    box-shadow: none !important;
-    outline: none !important;
-    z-index: 10;
-    cursor: pointer;
+    background: transparent !important;
+    color: #1f2937 !important;
+    padding: 0 !important;
+    margin-bottom: 4px !important;
+    text-align: left !important;
 }
 
 div[data-testid="stButton"] button:hover {
-    background: transparent !important;
-    border: none !important;
+    color: #0078D4 !important;
 }
 
-/* Symmetrical title styling across all types of cards */
-.card-title {
-    font-size: 20px !important;
-    font-weight: 700 !important;
-    color: #1f2937 !important;
-    margin-bottom: 10px !important;
-    line-height: 1.2 !important;
-}
-
-/* Base custom card container template */
-.original-card, .normal-card, .selected-card {
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 20px;
-    transition: all 0.2s ease-in-out;
-    background-color: #ffffff;
-}
-
-/* Original static image card theme */
-.original-card {
-    border: 2px solid #d1d5db;
-    background-color: #f9fafb;
-}
-
-/* Neutral baseline prediction card theme */
+/* Image card in normal state */
 .normal-card {
     border: 2px solid #e5e7eb;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border-radius: 10px;
+    padding: 6px;
+    background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
 }
 
 .normal-card:hover {
     border-color: #a3b8cc;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Focused theme for selected predictions */
+/* Image card in selected state */
 .selected-card {
     border: 3px solid #0078D4;
+    border-radius: 10px;
+    padding: 5px;
     background-color: #f0f7ff;
-    box-shadow: 0 4px 14px rgba(0, 120, 212, 0.18);
-}
-
-/* Keep structural images under the clickable interactive layer */
-div[data-testid="stImage"] {
-    position: relative;
-    z-index: 1;
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
+    margin-bottom: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -239,10 +206,10 @@ for case in CASES:
         items.append((label, overlay_path))
 
 
-    
-# ... your previous code inside the CASES loop ...
+
 
     NUM_COLS = 3
+
     for start in range(0, len(items), NUM_COLS):
         row_items = items[start:start + NUM_COLS]
         cols = st.columns(NUM_COLS)
@@ -250,124 +217,51 @@ for case in CASES:
         for idx, (label, img_path) in enumerate(row_items):
             with cols[idx]:
                 if label == "Original":
-                    # Unified card structure for the original image
-                    st.markdown(f"""
-                    <div class="original-card">
-                        <div class="card-title">📷 Original: {case}</div>
-                    """, unsafe_allow_html=True)
-                    
+                    st.subheader(f"Original image: {case}")
                     if img_path.exists():
-                        st.image(str(img_path), use_container_width=True)
+                        st.image(
+                            str(img_path),
+                            width=320
+                        )
                     else:
                         st.warning(f"Missing original image: {img_path}")
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
 
                 else:
+
                     selected = st.session_state.get(f"best_selected_{case}") == label
-                    card_class = "selected-card" if selected else "normal-card"
-                    icon = "🟢" if selected else "⚪"
 
-                    # Bundling everything inside a clickable custom card container
-                    st.markdown(f"""
-                    <div class="{card_class}">
-                        <div class="card-title">{icon} Prediction {label}</div>
-                    """, unsafe_allow_html=True)
+                    title_color = "#0078D4" if selected else "#1f2937"
+                    border = "7px solid #0078D4" if selected else "2px solid #dddddd"
 
-                    # Invisible full-width Streamlit button layered on top of the card header
-                    if st.button("Select", key=f"select_{case}_{label}", label_visibility="collapsed"):
+                    button_text = f"Prediction {label}  ✓" if selected else f"Prediction {label}  □"
+
+                    if st.button(
+                        button_text,
+                        key=f"select_{case}_{label}"
+                    ):
                         st.session_state[f"best_selected_{case}"] = label
                         st.rerun()
 
                     if img_path.exists():
-                        st.image(str(img_path), use_container_width=True)
+                        st.markdown(
+                            f"""
+                            <div style="
+                                border:{border};
+                                border-radius:10px;
+                                padding:4px;
+                                display:inline-block;
+                                margin-bottom:10px;
+                            ">
+                            """,
+                            unsafe_allow_html=True
+                        )
+
+                        st.image(str(img_path), width=320)
+
+                        st.markdown("</div>", unsafe_allow_html=True)
+
                     else:
                         st.warning(f"Missing overlay: {img_path}")
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
-
-
-
-    # # NUM_COLS = 3
-
-    # # for start in range(0, len(items), NUM_COLS):
-    # #     row_items = items[start:start + NUM_COLS]
-    # #     cols = st.columns(NUM_COLS)
-
-    # #     for idx, (label, img_path) in enumerate(row_items):
-    # #         with cols[idx]:
-    # #             if label == "Original":
-    # #                 st.subheader(f"Original image: {case}")
-    # #                 if img_path.exists():
-    # #                     st.image(
-    # #                         str(img_path),
-    # #                         width=320
-    # #                     )
-    # #                 else:
-    # #                     st.warning(f"Missing original image: {img_path}")
-
-    # #             else:
-
-    # #                 selected = st.session_state.get(f"best_selected_{case}") == label
-                    
-                   
-    # #                 card_class = "selected-card" if selected else "normal-card"
-    # #                 icon = "🟢" if selected else "⚪"  
-
-                
-    # #                 if img_path.exists():
-    # #                     with open(img_path, "rb") as image_file:
-                          
-    # #                         if st.button(
-    # #                             f"{icon} Prediction {label}", 
-    # #                             key=f"select_{case}_{label}"
-    # #                         ):
-    # #                             st.session_state[f"best_selected_{case}"] = label
-    # #                             st.rerun()
-
-                           
-    # #                         st.markdown(f"""
-    # #                             <div class="{card_class}">
-    # #                                 <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:6px; display:block;">
-    # #                             </div>
-    # #                         """, unsafe_allow_html=True)
-    # #                 else:
-    # #                     st.warning(f"Missing overlay: {img_path}")
-
-                    # selected = st.session_state.get(f"best_selected_{case}") == label
-
-                    # title_color = "#0078D4" if selected else "#1f2937"
-                    # border = "7px solid #0078D4" if selected else "2px solid #dddddd"
-
-                    # button_text = f"Prediction {label}  ✓" if selected else f"Prediction {label}  □"
-
-                    # if st.button(
-                    #     button_text,
-                    #     key=f"select_{case}_{label}"
-                    # ):
-                    #     st.session_state[f"best_selected_{case}"] = label
-                    #     st.rerun()
-
-                    # if img_path.exists():
-                    #     st.markdown(
-                    #         f"""
-                    #         <div style="
-                    #             border:{border};
-                    #             border-radius:10px;
-                    #             padding:4px;
-                    #             display:inline-block;
-                    #             margin-bottom:10px;
-                    #         ">
-                    #         """,
-                    #         unsafe_allow_html=True
-                    #     )
-
-                    #     st.image(str(img_path), width=320)
-
-                    #     st.markdown("</div>", unsafe_allow_html=True)
-
-                    # else:
-                    #     st.warning(f"Missing overlay: {img_path}")
 
           
 
