@@ -21,23 +21,24 @@ div[class*="st-key-best_radio_"] label p {
     display: none !important;
 }
 
-/* Make image radio bigger and clearer */
-div[class*="st-key-best_radio_"] input[type="radio"] {
-    transform: scale(2.2);
-    cursor: pointer;
-}
-
-/* Move radio upward next to title */
+/* Move radio next to Prediction title */
 div[class*="st-key-best_radio_"] {
-    margin-top: -46px;
-    margin-left: 210px;
-    margin-bottom: 18px;
-    width: 40px;
+    margin-top: -48px;
+    margin-left: 190px;
+    margin-bottom: 22px;
+    width: 55px;
 }
 
-/* Keep radio group compact */
+/* Make radio bigger and more visible */
+div[class*="st-key-best_radio_"] input[type="radio"] {
+    transform: scale(2.8);
+    cursor: pointer;
+    accent-color: #ff4b4b;
+}
+
+/* Compact radio group */
 div[class*="st-key-best_radio_"] div[role="radiogroup"] {
-    width: 40px;
+    width: 55px;
 }
 
 /* Prediction title */
@@ -52,7 +53,6 @@ div[class*="st-key-best_radio_"] div[role="radiogroup"] {
 
 </style>
 """, unsafe_allow_html=True)
-
 
 
 
