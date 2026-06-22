@@ -7,7 +7,7 @@ import random
 import json
 import gspread
 from google.oauth2.service_account import Credentials
-
+import base64
 
 
 st.set_page_config(
@@ -17,34 +17,46 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* حذف دایره فوکوس و خطوط اضافه دور دکمه‌ها */
-div[data-testid="stButton"] button:focus,
-div[data-testid="stButton"] button:active,
-div[data-testid="stButton"] button:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-}
-
+/*deletion */
 div[data-testid="stButton"] button {
-    font-size: 24px !important;
-    font-weight: 700 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
     border: none !important;
     background: transparent !important;
     color: #1f2937 !important;
     padding: 0 !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 4px !important;
     text-align: left !important;
 }
 
 div[data-testid="stButton"] button:hover {
     color: #0078D4 !important;
-    background: transparent !important;
 }
 
-div[data-testid="stButton"] button p {
-    font-size: 24px !important;
-    font-weight: 700 !important;
+/* normal card */
+.normal-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 6px;
+    background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.normal-card:hover {
+    border-color: #a3b8cc;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* selected frame*/
+.selected-card {
+    border: 3px solid #0078D4;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #f0f7ff;
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
+    margin-bottom: 20px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -212,40 +224,67 @@ for case in CASES:
                         st.warning(f"Missing original image: {img_path}")
 
                 else:
+
                     selected = st.session_state.get(f"best_selected_{case}") == label
+                    
+                   
+                    card_class = "selected-card" if selected else "normal-card"
+                    icon = "🟢" if selected else "⚪"  
 
-                    title_color = "#0078D4" if selected else "#1f2937"
-                    border = "7px solid #0078D4" if selected else "2px solid #dddddd"
-
-                    button_text = f"Prediction {label}  ✓" if selected else f"Prediction {label}  □"
-
-                    if st.button(
-                        button_text,
-                        key=f"select_{case}_{label}"
-                    ):
-                        st.session_state[f"best_selected_{case}"] = label
-                        st.rerun()
-
+                
                     if img_path.exists():
-                        st.markdown(
-                            f"""
-                            <div style="
-                                border:{border};
-                                border-radius:10px;
-                                padding:4px;
-                                display:inline-block;
-                                margin-bottom:10px;
-                            ">
-                            """,
-                            unsafe_allow_html=True
-                        )
+                        with open(img_path, "rb") as image_file:
+                          
+                            if st.button(
+                                f"{icon} Prediction {label}", 
+                                key=f"select_{case}_{label}"
+                            ):
+                                st.session_state[f"best_selected_{case}"] = label
+                                st.rerun()
 
-                        st.image(str(img_path), width=320)
-
-                        st.markdown("</div>", unsafe_allow_html=True)
-
+                           
+                            st.markdown(f"""
+                                <div class="{card_class}">
+                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:6px; display:block;">
+                                </div>
+                            """, unsafe_allow_html=True)
                     else:
                         st.warning(f"Missing overlay: {img_path}")
+
+                    # selected = st.session_state.get(f"best_selected_{case}") == label
+
+                    # title_color = "#0078D4" if selected else "#1f2937"
+                    # border = "7px solid #0078D4" if selected else "2px solid #dddddd"
+
+                    # button_text = f"Prediction {label}  ✓" if selected else f"Prediction {label}  □"
+
+                    # if st.button(
+                    #     button_text,
+                    #     key=f"select_{case}_{label}"
+                    # ):
+                    #     st.session_state[f"best_selected_{case}"] = label
+                    #     st.rerun()
+
+                    # if img_path.exists():
+                    #     st.markdown(
+                    #         f"""
+                    #         <div style="
+                    #             border:{border};
+                    #             border-radius:10px;
+                    #             padding:4px;
+                    #             display:inline-block;
+                    #             margin-bottom:10px;
+                    #         ">
+                    #         """,
+                    #         unsafe_allow_html=True
+                    #     )
+
+                    #     st.image(str(img_path), width=320)
+
+                    #     st.markdown("</div>", unsafe_allow_html=True)
+
+                    # else:
+                    #     st.warning(f"Missing overlay: {img_path}")
 
           
 
