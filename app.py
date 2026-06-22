@@ -276,28 +276,34 @@ if submitted:
             "mapping": mapping_json
         })
 
+
+
     try:
         sheet = connect_to_google_sheet()
 
+        headers = [
+            "timestamp",
+            "participant",
+            "degree",
+            "role",
+            "country",
+            "inspection_experience",
+            "experience_years",
+            "case",
+            "best_prediction_label",
+            "best_prediction_model",
+            "acceptable_prediction_labels",
+            "acceptable_prediction_models",
+            "mapping"
+        ]
+
         if len(sheet.get_all_values()) == 0:
-            sheet.append_row([
-                "timestamp",
-                "participant",
-                "degree",
-                "role",
-                "country",
-                "inspection_experience",
-                "experience_years",
-                "case",
-                "best_prediction_label",
-                "best_prediction_model",
-                "acceptable_prediction_labels",
-                "acceptable_prediction_models",
-                "mapping"
-            ])
+            sheet.append_row(headers, value_input_option="RAW")
+
+        data_to_append = []
 
         for row in rows:
-            sheet.append_row([
+            data_to_append.append([
                 row["timestamp"],
                 row["participant"],
                 row["degree"],
@@ -312,6 +318,8 @@ if submitted:
                 row["acceptable_prediction_models"],
                 row["mapping"]
             ])
+
+        sheet.append_rows(data_to_append, value_input_option="RAW")
 
         st.success("Thank you. Your responses have been submitted successfully.")
 
