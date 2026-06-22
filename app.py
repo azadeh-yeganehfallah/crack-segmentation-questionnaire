@@ -14,118 +14,62 @@ st.set_page_config(
     page_title="Crack Segmentation Questionnaire",
     layout="wide"
 )
-# st.markdown("""
-# <style>
-# /* Remove all default button styling */
-# div[data-testid="stButton"] button {
-#     font-size: 20px !important;
-#     font-weight: 600 !important;
-#     border: none !important;
-#     background: transparent !important;
-#     color: #1f2937 !important;
-#     padding: 0 !important;
-#     margin-bottom: 4px !important;
-#     text-align: left !important;
-# }
-
-# div[data-testid="stButton"] button:hover {
-#     color: #0078D4 !important;
-# }
-
-# /* Image card in normal state */
-# .normal-card {
-#     border: 2px solid #e5e7eb;
-#     border-radius: 10px;
-#     padding: 6px;
-#     background-color: #ffffff;
-#     transition: all 0.2s ease-in-out;
-#     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-#     margin-bottom: 20px;
-# }
-
-# .normal-card:hover {
-#     border-color: #a3b8cc;
-#     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-# }
-
-# /* Image card in selected state */
-# .selected-card {
-#     border: 3px solid #0078D4;
-#     border-radius: 10px;
-#     padding: 5px;
-#     background-color: #f0f7ff;
-#     box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
-#     margin-bottom: 20px;
-# }
-# </style>
-# """, unsafe_allow_html=True)
-
 st.markdown("""
 <style>
-/* Style the native button inside cards to look like a clean header string */
-.normal-card div[data-testid="stButton"] button,
-.selected-card div[data-testid="stButton"] button {
-    font-size: 20px !important;
+/* Remove all default button styling */
+div[data-testid="stButton"] button {
+    font-size: 28px !important;
     font-weight: 700 !important;
-    color: #1f2937 !important;
-    background: transparent !important;
     border: none !important;
-    padding: 0 !important;
-    margin: 0 0 12px 0 !important;
-    text-align: left !important;
-    box-shadow: none !important;
-    outline: none !important;
-    width: 100% !important;
-    display: block !important;
-}
-
-/* Hover styling rules */
-.normal-card div[data-testid="stButton"] button:hover,
-.selected-card div[data-testid="stButton"] button:hover {
-    color: #0078D4 !important;
     background: transparent !important;
-}
-
-/* Static title style for the original non-interactive card */
-.card-title {
-    font-size: 20px !important;
-    font-weight: 700 !important;
     color: #1f2937 !important;
-    margin-bottom: 12px !important;
-    line-height: 1.2 !important;
+    padding: 0 !important;
+    margin-bottom: 4px !important;
+    text-align: left !important;
 }
 
-/* Structural sizing padding definitions for clean alignment */
-.original-card, .normal-card, .selected-card {
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 20px;
-    background-color: #ffffff;
-    transition: all 0.2s ease-in-out;
+div[data-testid="stButton"] button:hover {
+    color: #0078D4 !important;
 }
 
-.original-card {
-    border: 2px solid #d1d5db;
-    background-color: #f9fafb;
-}
-
+/* Image card in normal state */
 .normal-card {
     border: 2px solid #e5e7eb;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border-radius: 10px;
+    padding: 6px;
+    background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
 }
 
 .normal-card:hover {
     border-color: #a3b8cc;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+/* Image card in selected state */
 .selected-card {
     border: 3px solid #0078D4;
+    border-radius: 10px;
+    padding: 5px;
     background-color: #f0f7ff;
-    box-shadow: 0 4px 14px rgba(0, 120, 212, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
+    margin-bottom: 20px;
 }
+            
+
+.normal-card,
+.selected-card {
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 </style>
 """, unsafe_allow_html=True)
+
+
 
 
 
@@ -272,12 +216,8 @@ for case in CASES:
         items.append((label, overlay_path))
 
 
-
-# ... your previous code inside the CASES loop ...
-
-# ... your previous code inside the CASES loop ...
-
     NUM_COLS = 3
+
     for start in range(0, len(items), NUM_COLS):
         row_items = items[start:start + NUM_COLS]
         cols = st.columns(NUM_COLS)
@@ -285,85 +225,42 @@ for case in CASES:
         for idx, (label, img_path) in enumerate(row_items):
             with cols[idx]:
                 if label == "Original":
-                    # Clean container for the baseline image
-                    st.markdown(f"""
-                    <div class="original-card">
-                        <div class="card-title">📷 Original: {case}</div>
-                    """, unsafe_allow_html=True)
-                    
+                    st.subheader(f"Original image: {case}")
                     if img_path.exists():
-                        st.image(str(img_path), use_container_width=True)
+                        st.image(
+                            str(img_path),
+                            width=320
+                        )
                     else:
                         st.warning(f"Missing original image: {img_path}")
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
 
                 else:
                     selected = st.session_state.get(f"best_selected_{case}") == label
+
+                    
                     card_class = "selected-card" if selected else "normal-card"
-                    icon = "🟢" if selected else "⚪"
+                    icon = "🟢" if selected else "⚪"  
 
-                    # Wrapped inside a single custom card container
-                    st.markdown(f'<div class="{card_class}">', unsafe_allow_html=True)
-
-                    # Fixed: Removed label_visibility parameter completely
-                    if st.button(f"{icon} Prediction {label}", key=f"select_{case}_{label}"):
-                        st.session_state[f"best_selected_{case}"] = label
-                        st.rerun()
-
+                    
                     if img_path.exists():
-                        st.image(str(img_path), use_container_width=True)
-                    else:
-                        st.warning(f"Missing overlay: {img_path}")
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
+                        with open(img_path, "rb") as image_file:
 
-
-    # NUM_COLS = 3
-
-    # for start in range(0, len(items), NUM_COLS):
-    #     row_items = items[start:start + NUM_COLS]
-    #     cols = st.columns(NUM_COLS)
-
-    #     for idx, (label, img_path) in enumerate(row_items):
-    #         with cols[idx]:
-    #             if label == "Original":
-    #                 st.subheader(f"Original image: {case}")
-    #                 if img_path.exists():
-    #                     st.image(
-    #                         str(img_path),
-    #                         width=320
-    #                     )
-    #                 else:
-    #                     st.warning(f"Missing original image: {img_path}")
-
-    #             else:
-    #                 selected = st.session_state.get(f"best_selected_{case}") == label
-
-                    
-    #                 card_class = "selected-card" if selected else "normal-card"
-    #                 icon = "🟢" if selected else "⚪"  
-
-                    
-    #                 if img_path.exists():
-    #                     with open(img_path, "rb") as image_file:
-
-    #                         # Render the custom-styled button
-    #                         if st.button(
-    #                             f"{icon} Prediction {label}",
-    #                             key=f"select_{case}_{label}"
-    #                         ):
-    #                             st.session_state[f"best_selected_{case}"] = label
-    #                             st.rerun()
+                            # Render the custom-styled button
+                            if st.button(
+                                f"{icon} Prediction {label}",
+                                key=f"select_{case}_{label}"
+                            ):
+                                st.session_state[f"best_selected_{case}"] = label
+                                st.rerun()
 
                             
-    #                         st.markdown(f"""
-    #                             <div class="{card_class}">
-    #                                 <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:6px; display:block;">
-    #                             </div>
-    #                         """, unsafe_allow_html=True)
-    #                 else:
-    #                     st.warning(f"Missing overlay: {img_path}")
+                            st.markdown(f"""
+                                <div class="{card_class}">
+                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:320%; border-radius:6px; display:block;MARGIN:AUTO">
+                                </div>
+                            """, unsafe_allow_html=True)
+                    else:
+                        st.warning(f"Missing overlay: {img_path}")
 
 
           
