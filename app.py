@@ -16,22 +16,42 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Image radio buttons next to Prediction title */
-div[class*="st-key-best_radio_"] div[role="radiogroup"] {
-    justify-content: flex-end;
-}
-
+/* Hide empty radio text */
 div[class*="st-key-best_radio_"] label p {
     display: none !important;
 }
 
+/* Make image radio bigger and clearer */
 div[class*="st-key-best_radio_"] input[type="radio"] {
-    transform: scale(1.8);
+    transform: scale(2.2);
+    cursor: pointer;
+}
+
+/* Move radio upward next to title */
+div[class*="st-key-best_radio_"] {
+    margin-top: -46px;
+    margin-left: 210px;
+    margin-bottom: 18px;
+    width: 40px;
+}
+
+/* Keep radio group compact */
+div[class*="st-key-best_radio_"] div[role="radiogroup"] {
+    width: 40px;
+}
+
+/* Prediction title */
+.prediction-title {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.prediction-title-row {
+    margin-bottom: 8px;
 }
 
 </style>
 """, unsafe_allow_html=True)
-
 
 
 
@@ -199,22 +219,28 @@ for case in CASES:
                         st.warning(f"Missing original image: {img_path}")
 
                 else:
-                    title_col, radio_col = st.columns([0.85, 0.15])
 
-                    with title_col:
-                        st.markdown(f"### Prediction {label}")
 
-                    with radio_col:
-                        st.radio(
-                            label="",
-                            options=[""],
-                            key=f"best_radio_{case}_{label}",
-                            index=None,
-                            horizontal=True,
-                            label_visibility="collapsed",
-                            on_change=select_best,
-                            args=(case, label)
-                        )
+                    st.markdown(
+                        f"""
+                        <div class="prediction-title-row">
+                            <span class="prediction-title">Prediction {label}</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
+                    st.radio(
+                        label="",
+                        options=[""],
+                        key=f"best_radio_{case}_{label}",
+                        index=None,
+                        horizontal=True,
+                        label_visibility="collapsed",
+                        on_change=select_best,
+                        args=(case, label)
+                    )
+                    
 
                     if img_path.exists():
                         st.image(
