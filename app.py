@@ -15,21 +15,34 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-div[role="radiogroup"] label {
+
+/* Participant information graphical settings */
+.profile-radio div[role="radiogroup"] label,
+.profile-radio div[role="radiogroup"] label p {
     font-size: 22px !important;
     font-weight: 600 !important;
 }
 
-div[role="radiogroup"] label p {
-    font-size: 22px !important;
-    font-weight: 600 !important;
+.profile-radio div[role="radiogroup"] input {
+    transform: scale(1.8);
 }
 
-div[role="radiogroup"] input {
-    transform: scale(1.4);
+
+/* Image evaluation graphical settings */
+.image-radio div[role="radiogroup"] label,
+.image-radio div[role="radiogroup"] label p {
+    font-size: 26px !important;
+    font-weight: 700 !important;
 }
+
+.image-radio div[role="radiogroup"] input {
+    transform: scale(1.6);
+}
+
 </style>
 """, unsafe_allow_html=True)
+
+
 
 
 
@@ -146,11 +159,14 @@ country = st.text_input("Country where you currently work or study")
 
 
 
+st.markdown('<div class="profile-radio">', unsafe_allow_html=True)
+
 inspection_experience = st.radio(
     "Do you have experience with visual inspection of concrete structures?",
     ["Yes", "No"]
 )
 
+st.markdown('</div>', unsafe_allow_html=True)
 
 experience = st.selectbox(
     "Years of experience in structural engineering / inspection",
@@ -205,6 +221,9 @@ for case in CASES:
                     else:
                         st.warning(f"Missing overlay: {img_path}")
 
+
+                    st.markdown('<div class="image-radio">', unsafe_allow_html=True)
+
                     st.radio(
                         label="",
                         options=[label],
@@ -215,6 +234,8 @@ for case in CASES:
                         on_change=select_best,
                         args=(case, label)
                     )
+
+                    st.markdown('</div>', unsafe_allow_html=True)
 
     best_choice = st.session_state.get(
         f"best_selected_{case}",
@@ -326,3 +347,11 @@ if submitted:
     except Exception as e:
         st.error("There was an error while saving your responses.")
         st.exception(e)
+
+
+
+
+#git add .
+#git commit -m "the changes "
+#git push
+
