@@ -16,27 +16,32 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Participant information graphical settings */
-.profile-radio div[role="radiogroup"] label,
-.profile-radio div[role="radiogroup"] label p {
+/* Participant radio */
+div[class*="st-key-inspection_experience"] div[role="radiogroup"] label,
+div[class*="st-key-inspection_experience"] div[role="radiogroup"] label p {
     font-size: 22px !important;
     font-weight: 600 !important;
 }
 
-.profile-radio div[role="radiogroup"] input {
+div[class*="st-key-inspection_experience"] input[type="radio"] {
     transform: scale(1.8);
 }
 
 
-/* Image evaluation graphical settings */
-.image-radio div[role="radiogroup"] label,
-.image-radio div[role="radiogroup"] label p {
-    font-size: 28px !important;
+/* Image radios: A, B, C, D, E */
+div[class*="st-key-best_radio_"] div[role="radiogroup"] label,
+div[class*="st-key-best_radio_"] div[role="radiogroup"] label p {
+    font-size: 30px !important;
     font-weight: 700 !important;
 }
 
-.image-radio div[role="radiogroup"] input {
-    transform: scale(2);
+div[class*="st-key-best_radio_"] input[type="radio"] {
+    transform: scale(2.2);
+    margin-right: 10px;
+}
+
+div[class*="st-key-best_radio_"] div[role="radiogroup"] {
+    justify-content: center;
 }
 
 </style>
@@ -159,14 +164,12 @@ country = st.text_input("Country where you currently work or study")
 
 
 
-st.markdown('<div class="profile-radio">', unsafe_allow_html=True)
-
 inspection_experience = st.radio(
     "Do you have experience with visual inspection of concrete structures?",
-    ["Yes", "No"]
+    ["Yes", "No"],
+    key="inspection_experience"
 )
 
-st.markdown('</div>', unsafe_allow_html=True)
 
 experience = st.selectbox(
     "Years of experience in structural engineering / inspection",
@@ -222,7 +225,7 @@ for case in CASES:
                         st.warning(f"Missing overlay: {img_path}")
 
 
-                    st.markdown('<div class="image-radio">', unsafe_allow_html=True)
+                
 
                     st.radio(
                         label="",
@@ -235,7 +238,7 @@ for case in CASES:
                         args=(case, label)
                     )
 
-                    st.markdown('</div>', unsafe_allow_html=True)
+                  
 
     best_choice = st.session_state.get(
         f"best_selected_{case}",
