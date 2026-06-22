@@ -18,28 +18,23 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-.prediction-title {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.selected-title {
-    color: #0078D4;
-}
-
-.unselected-title {
-    color: #1f2937;
-}
-
-/* Select buttons */
-
 div[data-testid="stButton"] button {
-    height: 40px;
-    font-weight: 700;
-    border-radius: 8px;
-    border: 2px solid #0078D4;
-    color: #0078D4;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    border: none !important;
+    background: transparent !important;
+    color: #1f2937 !important;
+    padding: 0 !important;
+    margin-bottom: 8px !important;
+}
+
+div[data-testid="stButton"] button:hover {
+    color: #0078D4 !important;
+}
+
+div[data-testid="stButton"] button p {
+    font-size: 28px !important;
+    font-weight: 700 !important;
 }
 
 </style>
@@ -212,70 +207,14 @@ for case in CASES:
                     title_color = "#0078D4" if selected else "#1f2937"
                     border = "7px solid #0078D4" if selected else "2px solid #dddddd"
 
-                    # Button style for this specific prediction
-                    button_key = f"select_{case}_{label}"
+                    button_text = f"Prediction {label}  ✓" if selected else f"Prediction {label}  □"
 
-                    st.markdown(
-                        f"""
-                        <style>
-                        div[class*="st-key-{button_key}"] button {{
-                            width: 38px !important;
-                            height: 38px !important;
-                            min-width: 38px !important;
-                            padding: 0 !important;
-                            border-radius: 8px !important;
-                            border: 3px solid #0078D4 !important;
-                            font-size: 24px !important;
-                            font-weight: 900 !important;
-                            line-height: 1 !important;
-                        }}
+                    if st.button(
+                        button_text,
+                        key=f"select_{case}_{label}"
+                    ):
+                        st.session_state[f"best_selected_{case}"] = label
 
-                        div[class*="st-key-{button_key}"] button p {{
-                            font-size: 24px !important;
-                            font-weight: 900 !important;
-                        }}
-                        </style>
-                        """,
-                        unsafe_allow_html=True
-                    )
-
-                    if selected:
-                        st.markdown(
-                            f"""
-                            <style>
-                            div[class*="st-key-{button_key}"] button {{
-                                background-color: #58D68D !important;
-                                color: white !important;
-                                border-color: #58D68D !important;
-                            }}
-                            </style>
-                            """,
-                            unsafe_allow_html=True
-                        )
-
-                    title_col, check_col, _ = st.columns([0.52, 0.10, 0.38], gap="small")
-
-                    with title_col:
-                        st.markdown(
-                            f"""
-                            <div style="
-                                font-size:28px;
-                                font-weight:700;
-                                color:{title_color};
-                                margin-bottom:8px;
-                            ">
-                                Prediction {label}
-                            </div>
-                            """,
-                            unsafe_allow_html=True
-                        )
-                    with check_col:
-                        if st.button(
-                            "✓" if selected else "☐",
-                            key=button_key
-                        ):
-                            st.session_state[f"best_selected_{case}"] = label
-                            
                     if img_path.exists():
                         st.markdown(
                             f"""
