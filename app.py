@@ -110,11 +110,6 @@ if "case_label_to_model" not in st.session_state:
 def select_best(case, label):
     st.session_state[f"best_selected_{case}"] = label
 
-    for other_label in DISPLAY_LABELS:
-        key = f"best_radio_{case}_{other_label}"
-        if other_label != label and key in st.session_state:
-            st.session_state[key] = None
-
 
 st.title("Expert Evaluation of Crack Segmentation Masks")
 
@@ -274,14 +269,13 @@ for case in CASES:
                             """,
                             unsafe_allow_html=True
                         )
-
                     with check_col:
                         if st.button(
-                            "✓" if selected else " ",
+                            "✓" if selected else "☐",
                             key=button_key
                         ):
                             st.session_state[f"best_selected_{case}"] = label
-
+                            
                     if img_path.exists():
                         st.markdown(
                             f"""
