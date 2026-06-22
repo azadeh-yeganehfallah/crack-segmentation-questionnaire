@@ -7,6 +7,10 @@ import random
 import json
 import gspread
 from google.oauth2.service_account import Credentials
+import base64
+from st_clickable_images import clickable_images
+
+
 
 st.set_page_config(
     page_title="Crack Segmentation Questionnaire",
@@ -102,6 +106,13 @@ MODEL_FILES = {
     "model_05": {"mask": "mask_5.png", "overlay": "overlay_5.png"},
 }
 
+
+
+
+def image_to_base64(path):
+    with open(path, "rb") as f:
+        data = base64.b64encode(f.read()).decode()
+    return f"data:image/png;base64,{data}"
 
 if "participant_id" not in st.session_state:
     st.session_state.participant_id = str(uuid.uuid4())
@@ -222,37 +233,56 @@ for case in CASES:
                         st.warning(f"Missing original image: {img_path}")
 
                 else:
+                    selected = (
+                        st.session_state.get(f"best_selected_{case}") == label
+                    )
 
+                    tick = " ✅" if selected else ""
+
+                    title_color = "#0078D4" if selected else "#1f2937"
+                    border = "6px solid #0078D4" if selected else "2px solid #dddddd"
 
                     st.markdown(
                         f"""
-                        <div class="prediction-title-row">
-                            <span class="prediction-title">Prediction {label}</span>
+                        <div style="
+                            font-size:28px;
+                            font-weight:700;
+                            color:{title_color};
+                            margin-bottom:8px;
+                        ">
+                            Prediction {label}{tick}
                         </div>
                         """,
                         unsafe_allow_html=True
                     )
 
-                    st.radio(
-                        label="",
-                        options=[""],
-                        key=f"best_radio_{case}_{label}",
-                        index=None,
-                        horizontal=True,
-                        label_visibility="collapsed",
-                        on_change=select_best,
-                        args=(case, label)
-                    )
-                    
-
                     if img_path.exists():
-                        st.image(
-                            str(img_path),
-                            width=320
+                        clicked = clickable_images(
+                            paths=[image_to_base64(img_path)],
+                            titles=[f"Prediction {label}"],
+                            div_style={
+                                "display": "flex",
+                                "justify-content": "flex-start"
+                            },
+                            img_style={
+                                "width": "320px",
+                                "border": border,
+                                "border-radius": "10px",
+                                "padding": "4px",
+                                "cursor": "pointer"
+                            },
+                            key=f"click_img_{case}_{label}"
                         )
+
+                        if clicked == 0:
+                            select_best(case, label)
+                            st.rerun()
+
                     else:
                         st.warning(f"Missing overlay: {img_path}")
-           
+
+
+          
 
     best_choice = st.session_state.get(
         f"best_selected_{case}",
