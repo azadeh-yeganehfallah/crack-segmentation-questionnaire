@@ -212,14 +212,53 @@ for case in CASES:
                         st.warning(f"Missing original image: {img_path}")
 
                 else:
-                    selected = (
-                        st.session_state.get(f"best_selected_{case}") == label
-                    )
+                    selected = st.session_state.get(f"best_selected_{case}") == label
 
                     title_color = "#0078D4" if selected else "#1f2937"
                     border = "7px solid #0078D4" if selected else "2px solid #dddddd"
 
-                    title_col, button_col = st.columns([0.78, 0.22])
+                    # Button style for this specific prediction
+                    button_key = f"select_{case}_{label}"
+
+                    st.markdown(
+                        f"""
+                        <style>
+                        div[class*="st-key-{button_key}"] button {{
+                            width: 38px !important;
+                            height: 38px !important;
+                            min-width: 38px !important;
+                            padding: 0 !important;
+                            border-radius: 8px !important;
+                            border: 3px solid #0078D4 !important;
+                            font-size: 24px !important;
+                            font-weight: 900 !important;
+                            line-height: 1 !important;
+                        }}
+
+                        div[class*="st-key-{button_key}"] button p {{
+                            font-size: 24px !important;
+                            font-weight: 900 !important;
+                        }}
+                        </style>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
+                    if selected:
+                        st.markdown(
+                            f"""
+                            <style>
+                            div[class*="st-key-{button_key}"] button {{
+                                background-color: #58D68D !important;
+                                color: white !important;
+                                border-color: #58D68D !important;
+                            }}
+                            </style>
+                            """,
+                            unsafe_allow_html=True
+                        )
+
+                    title_col, check_col, _ = st.columns([0.52, 0.10, 0.38], gap="small")
 
                     with title_col:
                         st.markdown(
@@ -236,13 +275,10 @@ for case in CASES:
                             unsafe_allow_html=True
                         )
 
-                    with button_col:
-                        button_text = "✓" if selected else "Select"
-
+                    with check_col:
                         if st.button(
-                            button_text,
-                            key=f"select_{case}_{label}",
-                            use_container_width=True
+                            "✓" if selected else " ",
+                            key=button_key
                         ):
                             st.session_state[f"best_selected_{case}"] = label
 
@@ -266,7 +302,6 @@ for case in CASES:
 
                     else:
                         st.warning(f"Missing overlay: {img_path}")
-
 
           
 
