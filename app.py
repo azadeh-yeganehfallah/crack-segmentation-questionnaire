@@ -31,12 +31,12 @@ st.markdown("""
 /* Image evaluation graphical settings */
 .image-radio div[role="radiogroup"] label,
 .image-radio div[role="radiogroup"] label p {
-    font-size: 26px !important;
+    font-size: 28px !important;
     font-weight: 700 !important;
 }
 
 .image-radio div[role="radiogroup"] input {
-    transform: scale(1.6);
+    transform: scale(2);
 }
 
 </style>
