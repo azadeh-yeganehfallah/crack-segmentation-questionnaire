@@ -62,57 +62,53 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Reset and completely hide native Streamlit button lines/borders */
-div[data-testid="stButton"] {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 0px !important;
-}
-
-div[data-testid="stButton"] button {
-    position: relative;
-    top: -38px;
-    width: 100% !important;
-    height: 35px !important;
+/* Style the native button inside cards to look like a clean header string */
+.normal-card div[data-testid="stButton"] button,
+.selected-card div[data-testid="stButton"] button {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #1f2937 !important;
     background: transparent !important;
     border: none !important;
-    color: transparent !important;
+    padding: 0 !important;
+    margin: 0 0 12px 0 !important;
+    text-align: left !important;
     box-shadow: none !important;
     outline: none !important;
-    z-index: 10;
-    cursor: pointer;
+    width: 100% !important;
+    display: block !important;
 }
 
-div[data-testid="stButton"] button:hover {
+/* Hover styling rules */
+.normal-card div[data-testid="stButton"] button:hover,
+.selected-card div[data-testid="stButton"] button:hover {
+    color: #0078D4 !important;
     background: transparent !important;
-    border: none !important;
 }
 
-/* Symmetrical title styling across all types of cards */
+/* Static title style for the original non-interactive card */
 .card-title {
     font-size: 20px !important;
     font-weight: 700 !important;
     color: #1f2937 !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 12px !important;
     line-height: 1.2 !important;
 }
 
-/* Base custom card container template */
+/* Structural sizing padding definitions for clean alignment */
 .original-card, .normal-card, .selected-card {
     border-radius: 12px;
-    padding: 12px;
+    padding: 16px;
     margin-bottom: 20px;
-    transition: all 0.2s ease-in-out;
     background-color: #ffffff;
+    transition: all 0.2s ease-in-out;
 }
 
-/* Original static image card theme */
 .original-card {
     border: 2px solid #d1d5db;
     background-color: #f9fafb;
 }
 
-/* Neutral baseline prediction card theme */
 .normal-card {
     border: 2px solid #e5e7eb;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04);
@@ -123,17 +119,10 @@ div[data-testid="stButton"] button:hover {
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-/* Focused theme for selected predictions */
 .selected-card {
     border: 3px solid #0078D4;
     background-color: #f0f7ff;
-    box-shadow: 0 4px 14px rgba(0, 120, 212, 0.18);
-}
-
-/* Keep structural images under the clickable interactive layer */
-div[data-testid="stImage"] {
-    position: relative;
-    z-index: 1;
+    box-shadow: 0 4px 14px rgba(0, 120, 212, 0.15);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -286,6 +275,8 @@ for case in CASES:
 
 # ... your previous code inside the CASES loop ...
 
+# ... your previous code inside the CASES loop ...
+
     NUM_COLS = 3
     for start in range(0, len(items), NUM_COLS):
         row_items = items[start:start + NUM_COLS]
@@ -294,7 +285,7 @@ for case in CASES:
         for idx, (label, img_path) in enumerate(row_items):
             with cols[idx]:
                 if label == "Original":
-                    # Unified card structure for the original image
+                    # Clean container for the baseline image
                     st.markdown(f"""
                     <div class="original-card">
                         <div class="card-title">📷 Original: {case}</div>
@@ -312,14 +303,11 @@ for case in CASES:
                     card_class = "selected-card" if selected else "normal-card"
                     icon = "🟢" if selected else "⚪"
 
-                    # Bundling everything inside a clickable custom card container
-                    st.markdown(f"""
-                    <div class="{card_class}">
-                        <div class="card-title">{icon} Prediction {label}</div>
-                    """, unsafe_allow_html=True)
+                    # Wrapped inside a single custom card container
+                    st.markdown(f'<div class="{card_class}">', unsafe_allow_html=True)
 
-                    # Invisible full-width Streamlit button layered on top of the card header
-                    if st.button("Select", key=f"select_{case}_{label}", label_visibility="collapsed"):
+                    # Fixed: Removed label_visibility parameter completely
+                    if st.button(f"{icon} Prediction {label}", key=f"select_{case}_{label}"):
                         st.session_state[f"best_selected_{case}"] = label
                         st.rerun()
 
@@ -329,6 +317,7 @@ for case in CASES:
                         st.warning(f"Missing overlay: {img_path}")
                     
                     st.markdown('</div>', unsafe_allow_html=True)
+
 
     # NUM_COLS = 3
 
