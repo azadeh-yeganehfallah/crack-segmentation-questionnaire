@@ -23,17 +23,17 @@ div[class*="st-key-best_radio_"] label p {
 
 /* Move radio next to Prediction title */
 div[class*="st-key-best_radio_"] {
-    margin-top: -48px;
-    margin-left: 190px;
+    margin-top: -50px;
+    margin-left: 170px;
     margin-bottom: 22px;
     width: 55px;
 }
 
 /* Make radio bigger and more visible */
 div[class*="st-key-best_radio_"] input[type="radio"] {
-    transform: scale(2.8);
+    transform: scale(3.2);
     cursor: pointer;
-    accent-color: #ff4b4b;
+    accent-color: #0066cc;
 }
 
 /* Compact radio group */
