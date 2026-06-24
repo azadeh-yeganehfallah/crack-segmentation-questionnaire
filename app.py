@@ -266,13 +266,13 @@ for case in CASES:
                             
                             st.markdown(f"""
                                 <div class="{card_class}">
-                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:340%; border-radius:6px; display:block;MARGIN:AUTO">
+                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:6px; display:block; margin:auto;">
                                 </div>
                             """, unsafe_allow_html=True)
                     else:
                         st.warning(f"Missing overlay: {img_path}")
 
-
+#<img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:340%; border-radius:6px; display:block;MARGIN:AUTO">
           
 
     best_choice = st.session_state.get(
