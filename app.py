@@ -62,8 +62,8 @@ div[data-testid="stButton"] button:hover {
 .normal-card,
 .selected-card {
     max-width: 330px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
 </style>
