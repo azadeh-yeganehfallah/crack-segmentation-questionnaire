@@ -27,8 +27,8 @@ div[data-testid="stButton"] button {
 }
 
 div[data-testid="stButton"] button p {
-    font-size: 28px !important;
-    font-weight: 800 !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
     line-height: 1.2 !important;
 }
 
