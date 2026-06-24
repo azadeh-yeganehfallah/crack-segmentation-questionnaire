@@ -145,7 +145,7 @@ This questionnaire is part of a research study aimed at evaluating the quality o
 
 Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
 
-Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions. The information you provide will be kept confidential and will not be used to personally identify you.
+Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions. 
 
 As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
 
