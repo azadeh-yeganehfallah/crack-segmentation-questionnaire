@@ -40,7 +40,7 @@ div[data-testid="stButton"] button:hover {
     background-color: #ffffff;
     transition: all 0.2s ease-in-out;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    margin-bottom: 0px;
+    margin-bottom: 2px;
 }
 
 .normal-card:hover {
@@ -55,7 +55,7 @@ div[data-testid="stButton"] button:hover {
     padding: 0px;
     background-color: #f0f7ff;
     box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
-    margin-bottom: 0px;
+    margin-bottom: 2px;
 }
             
 
@@ -266,7 +266,7 @@ for case in CASES:
                             
                             st.markdown(f"""
                                 <div class="{card_class}">
-                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:0px; display:block; margin:0;">
+                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:10px; display:block; margin:0px;">
                                 </div>
                             """, unsafe_allow_html=True)
                     else:
