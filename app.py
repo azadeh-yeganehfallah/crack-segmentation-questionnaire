@@ -18,7 +18,7 @@ st.markdown("""
 <style>
 /* Remove all default button styling */
 div[data-testid="stButton"] button {
-    font-size: 22px !important;
+    font-size: 34px !important;
     font-weight: 900 !important;
     border: none !important;
     background: transparent !important;
@@ -36,7 +36,7 @@ div[data-testid="stButton"] button:hover {
 .normal-card {
     border: 2px solid #e5e7eb;
     border-radius: 10px;
-    padding: 0px;
+    padding: 3px;
     background-color: #ffffff;
     transition: all 0.2s ease-in-out;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -50,9 +50,9 @@ div[data-testid="stButton"] button:hover {
 
 /* Image card in selected state */
 .selected-card {
-    border: 3px solid #0078D4;
+    border: 4px solid #0078D4;
     border-radius: 10px;
-    padding: 0px;
+    padding: 2px;
     background-color: #f0f7ff;
     box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
     margin-bottom: 2px;
