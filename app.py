@@ -24,7 +24,7 @@ div[data-testid="stButton"] button {
     background: transparent !important;
     color: #1f2937 !important;
     padding: 0 !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 0px !important;
     text-align: left !important;
 }
 
@@ -266,14 +266,15 @@ for case in CASES:
                             
                             st.markdown(f"""
                                 <div class="{card_class}">
-                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:10px; display:block; margin:0px;">
+                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
+                                    style="width:100%; height:320px; object-fit:cover; border-radius:8px; display:block; margin:0px;">
                                 </div>
                             """, unsafe_allow_html=True)
                     else:
                         st.warning(f"Missing overlay: {img_path}")
 
 #<img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:340%; border-radius:6px; display:block;MARGIN:AUTO">
-          
+#<img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:10px; display:block; margin:0px;">          
 
     best_choice = st.session_state.get(
         f"best_selected_{case}",
