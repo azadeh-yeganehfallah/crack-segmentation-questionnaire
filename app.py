@@ -66,29 +66,6 @@ div[data-testid="stButton"] button:hover {
     margin-right: 0px;
 }
 
-            
-.prediction-title {
-font-size: 24px;
-font-weight: 800;
-color: #1f2937;
-margin-bottom: 8px;
-}
-
-div[data-testid="stButton"] button {
-    font-size: 24px !important;
-    font-weight: 800 !important;
-    border: none !important;
-    background: transparent !important;
-    color: #1f2937 !important;
-    padding: 0 !important;
-    margin-bottom: 6px !important;
-    text-align: left !important;
-}            
-
-
-
-
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -279,13 +256,8 @@ for case in CASES:
                         with open(img_path, "rb") as image_file:
 
                             # Render the custom-styled button
-                            st.markdown(
-                                f"<div class='prediction-title'>{icon} Prediction {label}</div>",
-                                unsafe_allow_html=True
-                            )
-
                             if st.button(
-                                "Select",
+                                f"{icon} Prediction {label}",
                                 key=f"select_{case}_{label}"
                             ):
                                 st.session_state[f"best_selected_{case}"] = label
