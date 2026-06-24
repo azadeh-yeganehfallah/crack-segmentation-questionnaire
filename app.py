@@ -18,14 +18,19 @@ st.markdown("""
 <style>
 /* Remove all default button styling */
 div[data-testid="stButton"] button {
-    font-size: 34px !important;
-    font-weight: 900 !important;
+    font-size: 24px !important;
+    font-weight: 750 !important;
     border: none !important;
     background: transparent !important;
     color: #1f2937 !important;
     padding: 0 !important;
     margin-bottom: 0px !important;
     text-align: left !important;
+    line-height: 1.2 !important;
+}
+
+div[data-testid="stButton"] {
+    margin-bottom: -6px !important;
 }
 
 div[data-testid="stButton"] button:hover {
