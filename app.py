@@ -18,7 +18,7 @@ st.markdown("""
 <style>
 /* Remove all default button styling */
 div[data-testid="stButton"] button {
-    font-size: 24px !important;
+    font-size: 46px !important;
     font-weight: 750 !important;
     border: none !important;
     background: transparent !important;
@@ -30,7 +30,7 @@ div[data-testid="stButton"] button {
 }
 
 div[data-testid="stButton"] {
-    margin-bottom: -6px !important;
+    margin-bottom: -10px !important;
 }
 
 div[data-testid="stButton"] button:hover {
