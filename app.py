@@ -155,17 +155,7 @@ As structural engineers, inspectors, or potential end-users of such AI tools, yo
 
 
 
-st.header("Image Evaluation")
-
-st.markdown("""
-For each case, you will see the original crack image and five AI-generated predictions.
-
-Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
-
-If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
-
-The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.
-""")
+st.header("Participant Information")
 
 
 participant_name = st.text_input(
@@ -208,6 +198,16 @@ experience = st.selectbox(
 
 
 st.header("Image Evaluation")
+
+st.markdown("""
+For each case, you will see the original crack image and five AI-generated predictions.
+
+Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
+
+If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
+
+The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.
+""")
 
 answers = {}
 
