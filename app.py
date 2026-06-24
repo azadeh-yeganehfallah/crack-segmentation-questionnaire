@@ -61,7 +61,7 @@ div[data-testid="stButton"] button:hover {
 
 .normal-card,
 .selected-card {
-    max-width: 330px;
+    max-width: 320px;
     margin-left: 0px;
     margin-right: 0px;
 }
@@ -266,7 +266,7 @@ for case in CASES:
                             
                             st.markdown(f"""
                                 <div class="{card_class}">
-                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:10px; display:block; margin:0;">
+                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:0px; display:block; margin:0;">
                                 </div>
                             """, unsafe_allow_html=True)
                     else:
