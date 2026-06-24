@@ -18,7 +18,7 @@ st.markdown("""
 <style>
 /* Remove all default button styling */
 div[data-testid="stButton"] button {
-    font-size: 34px !important;
+    font-size: 22px !important;
     font-weight: 900 !important;
     border: none !important;
     background: transparent !important;
