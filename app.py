@@ -33,7 +33,7 @@ div[data-testid="stButton"] button p {
 }
 
 div[data-testid="stButton"] {
-    margin-bottom: -6px !important;
+    margin-bottom: -4px !important;
 }
 
 div[data-testid="stButton"] button:hover {
