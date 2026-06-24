@@ -36,7 +36,7 @@ div[data-testid="stButton"] button:hover {
 .normal-card {
     border: 2px solid #e5e7eb;
     border-radius: 10px;
-    padding: 6px;
+    padding: 0px;
     background-color: #ffffff;
     transition: all 0.2s ease-in-out;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -52,7 +52,7 @@ div[data-testid="stButton"] button:hover {
 .selected-card {
     border: 3px solid #0078D4;
     border-radius: 10px;
-    padding: 5px;
+    padding: 0px;
     background-color: #f0f7ff;
     box-shadow: 0 4px 12px rgba(0, 120, 212, 0.2);
     margin-bottom: 20px;
