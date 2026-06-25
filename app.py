@@ -100,9 +100,10 @@ div[data-testid="stButton"] button[kind="primary"]:hover {
 }
 
 
-div[data-testid="stProgress"] >div {
-    height: 24px !important;
-    
+div[data-testid="stProgress"] {
+    height: 16px !important;
+    border-radius:10px !important;
+
 }
 
 </style>
