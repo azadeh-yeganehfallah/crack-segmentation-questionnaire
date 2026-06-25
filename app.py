@@ -100,7 +100,7 @@ div[data-testid="stButton"] button[kind="primary"]:hover {
 }
 
 
-div[data-testid="stProgress"] > {
+div[data-testid="stProgress"] >div {
     height: 24px !important;
     
 }
