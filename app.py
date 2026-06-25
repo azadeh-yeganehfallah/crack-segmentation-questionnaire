@@ -320,22 +320,26 @@ for case in CASES:
         "None selected"
     )
 
-    acceptable_choices = st.multiselect(
-        f"If more than one prediction is acceptable for {case}, please select all acceptable options:",
-        DISPLAY_LABELS,
-        key=f"acceptable_{case}"
+    st.markdown(
+        f"**Optional:** If more than one prediction is acceptable for **{case}**, please select all acceptable options:",
     )
 
+    acceptable_choices = st.multiselect(
+        label="",
+        options=DISPLAY_LABELS,
+        key=f"acceptable_{case}",
+        label_visibility="collapsed"
+    )
     answers[case] = {
-        "best_choice": best_choice,
-        "acceptable_choices": acceptable_choices
-    }
+            "best_choice": best_choice,
+            "acceptable_choices": acceptable_choices
+        }
 
 
 st.markdown("---")
 
 submitted = st.button(
-    "Submit questionnaire",
+    "Submit Responses",
     type="primary",
     )
 
