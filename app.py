@@ -96,8 +96,8 @@ RESPONSE_FILE = Path("responses.csv")
 # --- GOOGLE SHEETS CONNECTION ---
 def connect_to_google_sheet():
     scope = [
-        "https://googleapis.com",
-        "https://googleapis.com"
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
     ]
     creds = Credentials.from_service_account_info(
         st.secrets["gcp_service_account"],
