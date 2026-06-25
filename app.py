@@ -255,11 +255,8 @@ for case in CASES:
         for idx, (label, img_path) in enumerate(row_items):
             with cols[idx]:
                 if label == "Original":
-                    st.subheader(f"Original image: {case}")
-                    st.markdown(
-                        "<div style='margin-top:0px'></div>",
-                        unsafe_allow_html=True
-                    )
+                    st.markdown(f"<div class='original-title'>Original image: {case}</div>",
+                                unsafe_allow_html=True)
                     if img_path.exists():
                         st.image(
                             str(img_path),
