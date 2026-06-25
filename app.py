@@ -40,7 +40,7 @@ div[data-testid="stButton"] button:hover {
     color: #0078D4 !important;
 }
 
-/* Image card in normal state */
+/* prediction in normal state */
 .normal-card {
     border: 2px solid #e5e7eb;
     border-radius: 10px;
@@ -56,7 +56,7 @@ div[data-testid="stButton"] button:hover {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Image card in selected state */
+/* prediction in selected state */
 .selected-card {
     border: 4px solid #0078D4;
     border-radius: 10px;
@@ -81,7 +81,7 @@ div[data-testid="stButton"] button:hover {
     font-size: 26px;
     font-weight: 800;
     color: #1f2937;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     line-height: 1.2;
 }
 </style>
