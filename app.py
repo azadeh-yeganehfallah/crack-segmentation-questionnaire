@@ -455,8 +455,10 @@ if submitted:
             "mapping"
         ]
 
-        if len(sheet.get_all_values()) == 0:
-            sheet.append_row(headers, value_input_option="RAW")
+        existing_values = sheet.get_all_values()
+
+        if not existing_values or existing_values[0] != headers:
+            sheet.insert_row(headers, index=1, value_input_option="RAW")
 
         data_to_append = []
 
@@ -477,7 +479,7 @@ if submitted:
                 row["mapping"]
             ])
 
-        sheet.append_rows(data_to_append, value_input_option="RAW")
+        sheet.append_rows(data_to_append,value_input_option="RAW",table_range="A:M")
 
         st.success("Thank you. Your responses have been submitted successfully.")
 
