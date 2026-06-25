@@ -361,7 +361,7 @@ st.markdown("<div style='margin-top:18px;'></div>", unsafe_allow_html=True)
 col_progress, col_prev, col_next = st.columns([3, 1, 1])
 
 with col_progress:
-    st.markdown("<div style='margin-top:-18px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:-25px;'></div>", unsafe_allow_html=True)
     st.markdown(
         f"""
         <div style="font-size:36px; font-weight:800; margin-bottom:4px;">
