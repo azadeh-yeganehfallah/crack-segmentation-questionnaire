@@ -72,6 +72,7 @@ div[data-testid="stButton"] button:hover {
     max-width: 320px;
     margin-left: 0px;
     margin-right: 0px;
+    margin-bottom: 18px;        
 }
 
 </style>
