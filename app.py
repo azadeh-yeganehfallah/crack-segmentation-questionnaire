@@ -86,16 +86,17 @@ div[data-testid="stButton"] button:hover {
 }
             
 div[data-testid="stButton"] button[kind="primary"] {
-    background-color: #16a34a !important;
+    background: linear-gradient(135deg, #16a34a, #22c55e) !important;
     color: white !important;
-    border: 2px solid #15803d !important;
-    border-radius: 10px !important;
-    padding: 12px 24px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 28px !important;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25) !important;
 }
 
-div[data-testid="stButton"] button[kind="primary"] p {
-    font-size: 24px !important;
-    font-weight: 800 !important;
+div[data-testid="stButton"] button[kind="primary"]:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a) !important;
+    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.35) !important;
 }
 
 
