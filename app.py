@@ -177,26 +177,12 @@ if "case_label_to_model" not in st.session_state:
 if "current_case_index" not in st.session_state:
     st.session_state.current_case_index = 0
 
+if "participant_completed" not in st.session_state:
+    st.session_state.participant_completed = False
+
 if "answers" not in st.session_state:
     st.session_state.answers = {}
 
-if "participant_name" not in st.session_state:
-    st.session_state.participant_name = ""
-
-if "degree" not in st.session_state:
-    st.session_state.degree = "Bachelor's degree"
-
-if "role" not in st.session_state:
-    st.session_state.role = "Student"
-
-if "country" not in st.session_state:
-    st.session_state.country = ""
-
-if "inspection_experience" not in st.session_state:
-    st.session_state.inspection_experience = "Yes"
-
-if "experience" not in st.session_state:
-    st.session_state.experience = "0–2"
 
 def select_best(case, label):
     st.session_state[f"best_selected_{case}"] = label
@@ -208,8 +194,7 @@ def select_best(case, label):
 case_index = st.session_state.current_case_index
 case = CASES[case_index]
 
-
-if case_index == 0:
+if not st.session_state.participant_completed:
     st.title("Expert Evaluation of Crack Segmentation Masks")
 
     st.markdown("""
@@ -218,54 +203,43 @@ This questionnaire is part of a research study aimed at evaluating the quality o
 Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
 
 Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions. 
-
-As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, 
-these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. 
-Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
 """)
 
     st.header("Participant Information")
 
-    st.text_input(
-        "Name (optional)",
-        key="participant_name"
-    )
+    with st.form("participant_form"):
+        participant_name = st.text_input("Name (optional)")
+        degree = st.selectbox(
+            "Education level",
+            ["Bachelor's degree", "Master's degree", "PhD", "Other"]
+        )
+        role = st.selectbox(
+            "Current role",
+            ["Student", "PhD student", "Researcher", "Structural engineer", "Professor", "Other"]
+        )
+        country = st.text_input("Country where you currently work or study")
+        inspection_experience = st.radio(
+            "Do you have experience with visual inspection of concrete structures?",
+            ["Yes", "No"]
+        )
+        experience = st.selectbox(
+            "Years of experience in structural engineering / inspection",
+            ["0–2", "3–5", "6–10", "More than 10"]
+        )
 
-    st.selectbox(
-        "Education level",
-        ["Bachelor's degree", "Master's degree", "PhD", "Other"],
-        key="degree"
-    )
+        start = st.form_submit_button("Start Questionnaire")
 
-    st.selectbox(
-        "Current role",
-        [
-            "Student",
-            "PhD student",
-            "Researcher",
-            "Structural engineer",
-            "Professor",
-            "Other"
-        ],
-        key="role"
-    )
+    if start:
+        st.session_state.participant_name = participant_name
+        st.session_state.degree = degree
+        st.session_state.role = role
+        st.session_state.country = country
+        st.session_state.inspection_experience = inspection_experience
+        st.session_state.experience = experience
+        st.session_state.participant_completed = True
+        st.rerun()
 
-    st.text_input(
-        "Country where you currently work or study",
-        key="country"
-    )
-
-    st.radio(
-        "Do you have experience with visual inspection of concrete structures?",
-        ["Yes", "No"],
-        key="inspection_experience"
-    )
-
-    st.selectbox(
-        "Years of experience in structural engineering / inspection",
-        ["0–2", "3–5", "6–10", "More than 10"],
-        key="experience"
-    )    
+    st.stop()
 
 
 
