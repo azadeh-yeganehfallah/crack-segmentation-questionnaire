@@ -33,7 +33,7 @@ div[data-testid="stButton"] button p {
 }
 
 div[data-testid="stButton"] {
-    margin-bottom: -16px !important;
+    margin-bottom: -18px !important;
 }
 
 div[data-testid="stButton"] button:hover {
@@ -72,7 +72,7 @@ div[data-testid="stButton"] button:hover {
     max-width: 320px;
     margin-left: 0px;
     margin-right: 0px;
-    margin-bottom: 18px;        
+    margin-bottom: 20px;        
 }
 
 </style>
