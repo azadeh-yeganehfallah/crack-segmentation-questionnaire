@@ -177,6 +177,9 @@ if "case_label_to_model" not in st.session_state:
 if "current_case_index" not in st.session_state:
     st.session_state.current_case_index = 0
 
+if "answers" not in st.session_state:
+    st.session_state.answers = {}
+
 def select_best(case, label):
     st.session_state[f"best_selected_{case}"] = label
 
@@ -186,7 +189,7 @@ def select_best(case, label):
 
 case_index = st.session_state.current_case_index
 case = CASES[case_index]
-answers = {}
+
 
 if case_index == 0:
     st.title("Expert Evaluation of Crack Segmentation Masks")
@@ -331,10 +334,10 @@ acceptable_choices = st.multiselect(
     key=f"acceptable_{case}",
     label_visibility="collapsed"
 )
-answers[case] = {
-        "best_choice": best_choice,
-        "acceptable_choices": acceptable_choices
-    }
+st.session_state.answers[case] = {
+    "best_choice": best_choice,
+    "acceptable_choices": acceptable_choices
+}
 
 st.markdown("<div style='margin-top:-10px;'></div>", unsafe_allow_html=True)
 
@@ -391,7 +394,7 @@ else:
 if submitted:
     rows = []
 
-    for case, ans in answers.items():
+    for case, ans in st.session_state.answers.items():
         case_mapping = st.session_state.case_label_to_model[case]
         mapping_json = json.dumps(case_mapping)
 
