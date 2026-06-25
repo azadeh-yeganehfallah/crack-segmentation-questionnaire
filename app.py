@@ -100,7 +100,10 @@ div[data-testid="stButton"] button[kind="primary"]:hover {
 }
 
 
-
+div[data-testid="stProgress"] > div > div > div {
+    height: 10px !important;
+    border-radius: 10px !important;
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -354,7 +357,7 @@ answers[case] = {
 
 st.markdown("<div style='margin-top:18px;'></div>", unsafe_allow_html=True)
 
-col_progress, col_prev, col_next = st.columns([4, 1, 1])
+col_progress, col_prev, col_next = st.columns([3, 1, 1])
 
 with col_progress:
     st.markdown(
