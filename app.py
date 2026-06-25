@@ -263,28 +263,44 @@ answers = {}
 case_dir = DATA_DIR / case
 original_path = case_dir / "original.png"
 
-col_prev, col_progress, col_next = st.columns([1, 8, 1])
+col_progress, col_buttons = st.columns([8, 2])
 
-with col_prev:
-    if st.button("Previous", disabled=case_index == 0, type="primary"):
-        st.session_state.current_case_index -= 1
-        st.rerun()
+with col_buttons:
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button(
+            "Previous",
+            disabled=case_index == 0,
+            type="primary",
+            use_container_width=True
+        ):
+            st.session_state.current_case_index -= 1
+            st.rerun()
+
+    with col2:
+        if st.button(
+            "Next",
+            disabled=case_index == len(CASES) - 1,
+            type="primary",
+            use_container_width=True
+        ):
+            st.session_state.current_case_index += 1
+            st.rerun()
 
 with col_progress:
+
     st.markdown(
         f"""
         <div style="font-size:22px; font-weight:700; margin-bottom:6px;">
             Case {case_index + 1} of {len(CASES)}
         </div>
         """,
-        unsafe_allow_html=True)
-    
-    st.progress((case_index + 1) / len(CASES))
+        unsafe_allow_html=True
+    )
 
-with col_next:
-    if st.button("Next", disabled=case_index == len(CASES) - 1, type="primary"):
-        st.session_state.current_case_index += 1
-        st.rerun()
+    st.progress((case_index + 1) / len(CASES))
 
 
 items = [("Original", original_path)]
