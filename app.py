@@ -322,8 +322,8 @@ for case in CASES:
 
     st.markdown(
         f"""
-        <div style="font-size:20px; font-weight:600; margin-top:10px; margin-bottom:6px;">
-            <b>Optional:</b> If more than one prediction is acceptable for <b>{case}</b>, please select all acceptable options:
+        <div style="font-size:20px; margin-top:10px; margin-bottom:6px;">
+            <strong>Optional:</strong> If more than one prediction is acceptable for <strong>{case}</strong>, please select all acceptable options:
         </div>
         """,
         unsafe_allow_html=True
