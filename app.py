@@ -84,6 +84,23 @@ div[data-testid="stButton"] button:hover {
     margin-bottom: 10px;
     line-height: 1.2;
 }
+            
+div[data-testid="stButton"] button[kind="primary"] {
+    background-color: #16a34a !important;
+    color: white !important;
+    border: 2px solid #15803d !important;
+    border-radius: 10px !important;
+    padding: 12px 24px !important;
+}
+
+div[data-testid="stButton"] button[kind="primary"] p {
+    font-size: 24px !important;
+    font-weight: 800 !important;
+}
+
+
+
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -314,7 +331,13 @@ for case in CASES:
     }
 
 
-submitted = st.button("Submit questionnaire")
+st.markdown("---")
+
+submitted = st.button(
+    "Submit questionnaire",
+    type="primary",
+    use_container_width=True
+)
 
 if submitted:
     rows = []
