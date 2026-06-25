@@ -242,21 +242,6 @@ experience = st.selectbox(
 )
 
 
-st.header("Image Evaluation")
-
-st.markdown("""
-For each case, you will see the original crack image and five AI-generated predictions.
-
-The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
-
-Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, 
-such as estimating crack width, crack length, and crack continuity.
-
-If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
-
-The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.
-""")
-
 # answers = {}
 
 # #for case in CASES:
@@ -266,6 +251,21 @@ The predictions may differ in the extent, continuity, shape, width, and level of
 case_index = st.session_state.current_case_index
 case = CASES[case_index]
 answers = {}
+
+if case_index == 0:
+    st.header("Image Evaluation")
+
+    st.markdown("""
+For each case, you will see the original crack image and five AI-generated predictions.
+
+The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
+
+Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
+
+If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
+
+The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.
+""")
 
 case_dir = DATA_DIR / case
 original_path = case_dir / "original.png"
@@ -361,6 +361,7 @@ st.markdown("<div style='margin-top:18px;'></div>", unsafe_allow_html=True)
 col_progress, col_prev, col_next = st.columns([3, 1, 1])
 
 with col_progress:
+    st.markdown("<div style='margin-top:-18px;'></div>", unsafe_allow_html=True)
     st.markdown(
         f"""
         <div style="font-size:36px; font-weight:800; margin-bottom:4px;">
