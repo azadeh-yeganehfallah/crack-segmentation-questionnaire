@@ -257,7 +257,7 @@ for case in CASES:
                 if label == "Original":
                     st.subheader(f"Original image: {case}")
                     st.markdown(
-                        "<div style='margin-top:-10px'></div>",
+                        "<div style='margin-top:-18px'></div>",
                         unsafe_allow_html=True
                     )
                     if img_path.exists():
