@@ -249,12 +249,28 @@ The predictions may differ in the extent, continuity, shape, width, and level of
 
 answers = {}
 
-for case in CASES:
+#for case in CASES:
+
+for case_index, case in enumerate(CASES):
     case_dir = DATA_DIR / case
     original_path = case_dir / "original.png"
 
     st.markdown("---")
     #st.subheader(f"Original image - {case.replace('_', ' ').title()}")
+
+    progress_value = (case_index + 1) / len(CASES)
+
+    st.markdown(
+        f"""
+        <div style="font-size:22px; font-weight:700; margin-bottom:6px;">
+            Case {case_index + 1} of {len(CASES)}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.progress(progress_value)
+
 
     items = [("Original", original_path)]
 
