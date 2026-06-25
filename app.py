@@ -356,7 +356,7 @@ answers[case] = {
         "acceptable_choices": acceptable_choices
     }
 
-#st.markdown("<div style='margin-top:18px;'></div>", unsafe_allow_html=True)
+st.markdown("<div style='margin-top:-10px;'></div>", unsafe_allow_html=True)
 
 col_progress, col_prev, col_next = st.columns([3, 1, 1])
 
