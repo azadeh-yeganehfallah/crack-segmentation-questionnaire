@@ -336,8 +336,7 @@ st.markdown("---")
 submitted = st.button(
     "Submit questionnaire",
     type="primary",
-    use_container_width=True
-)
+    )
 
 if submitted:
     rows = []
