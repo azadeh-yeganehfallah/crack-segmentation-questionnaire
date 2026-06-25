@@ -180,6 +180,24 @@ if "current_case_index" not in st.session_state:
 if "answers" not in st.session_state:
     st.session_state.answers = {}
 
+if "participant_name" not in st.session_state:
+    st.session_state.participant_name = ""
+
+if "degree" not in st.session_state:
+    st.session_state.degree = "Bachelor's degree"
+
+if "role" not in st.session_state:
+    st.session_state.role = "Student"
+
+if "country" not in st.session_state:
+    st.session_state.country = ""
+
+if "inspection_experience" not in st.session_state:
+    st.session_state.inspection_experience = "Yes"
+
+if "experience" not in st.session_state:
+    st.session_state.experience = "0–2"
+
 def select_best(case, label):
     st.session_state[f"best_selected_{case}"] = label
 
