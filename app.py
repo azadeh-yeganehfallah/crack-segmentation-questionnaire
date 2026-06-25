@@ -359,7 +359,7 @@ col_progress, col_prev, col_next = st.columns([4, 1, 1])
 with col_progress:
     st.markdown(
         f"""
-        <div style="font-size:24px; font-weight:700; margin-bottom:4px;">
+        <div style="font-size:28px; font-weight:800; margin-bottom:4px;">
             Case {case_index + 1} of {len(CASES)}
         </div>
         """,
