@@ -263,21 +263,28 @@ answers = {}
 case_dir = DATA_DIR / case
 original_path = case_dir / "original.png"
 
-st.markdown("---")
-#st.subheader(f"Original image - {case.replace('_', ' ').title()}")
+col_prev, col_progress, col_next = st.columns([1, 8, 1])
 
-progress_value = (case_index + 1) / len(CASES)
+with col_prev:
+    if st.button("Previous", disabled=case_index == 0, type="primary"):
+        st.session_state.current_case_index -= 1
+        st.rerun()
 
-st.markdown(
-    f"""
-    <div style="font-size:22px; font-weight:700; margin-bottom:6px;">
-        Case {case_index + 1} of {len(CASES)}
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+with col_progress:
+    st.markdown(
+        f"""
+        <div style="font-size:22px; font-weight:700; margin-bottom:6px;">
+            Case {case_index + 1} of {len(CASES)}
+        </div>
+        """,
+        unsafe_allow_html=True)
+    
+    st.progress((case_index + 1) / len(CASES))
 
-st.progress(progress_value)
+with col_next:
+    if st.button("Next", disabled=case_index == len(CASES) - 1, type="primary"):
+        st.session_state.current_case_index += 1
+        st.rerun()
 
 
 items = [("Original", original_path)]
@@ -363,27 +370,6 @@ answers[case] = {
         "best_choice": best_choice,
         "acceptable_choices": acceptable_choices
     }
-
-st.markdown("---")
-
-col_prev, col_mid, col_next = st.columns([1, 2, 1])
-
-with col_prev:
-    if st.button("Previous", disabled=case_index == 0):
-        st.session_state.current_case_index -= 1
-        st.rerun()
-
-with col_mid:
-    st.markdown(
-        f"<div style='text-align:center; font-size:18px;'>Case {case_index + 1} of {len(CASES)}</div>",
-        unsafe_allow_html=True
-    )
-
-with col_next:
-    if st.button("Next", disabled=case_index == len(CASES) - 1):
-        st.session_state.current_case_index += 1
-        st.rerun()
-
 
 if case_index == len(CASES) - 1:
     st.markdown("---")
