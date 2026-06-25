@@ -181,9 +181,17 @@ def select_best(case, label):
     st.session_state[f"best_selected_{case}"] = label
 
 
-st.title("Expert Evaluation of Crack Segmentation Masks")
 
-st.markdown("""
+
+
+case_index = st.session_state.current_case_index
+case = CASES[case_index]
+answers = {}
+
+if case_index == 0:
+    st.title("Expert Evaluation of Crack Segmentation Masks")
+
+    st.markdown("""
 This questionnaire is part of a research study aimed at evaluating the quality of crack segmentation results produced by deep learning models.
 
 Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
@@ -193,79 +201,54 @@ Your responses will be used only for research purposes and only to assess the qu
 As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, 
 these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. 
 Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
-
-
 """)
 
+    st.header("Participant Information")
+
+    st.text_input(
+        "Name (optional)",
+        key="participant_name"
+    )
+
+    st.selectbox(
+        "Education level",
+        ["Bachelor's degree", "Master's degree", "PhD", "Other"],
+        key="degree"
+    )
+
+    st.selectbox(
+        "Current role",
+        [
+            "Student",
+            "PhD student",
+            "Researcher",
+            "Structural engineer",
+            "Professor",
+            "Other"
+        ],
+        key="role"
+    )
+
+    st.text_input(
+        "Country where you currently work or study",
+        key="country"
+    )
+
+    st.radio(
+        "Do you have experience with visual inspection of concrete structures?",
+        ["Yes", "No"],
+        key="inspection_experience"
+    )
+
+    st.selectbox(
+        "Years of experience in structural engineering / inspection",
+        ["0–2", "3–5", "6–10", "More than 10"],
+        key="experience"
+    )    
 
 
 
-st.header("Participant Information")
 
-
-participant_name = st.text_input(
-    "Name (optional)"
-)
-
-degree = st.selectbox(
-    "Education level",
-    ["Bachelor's degree", "Master's degree", "PhD", "Other"]
-)
-
-role = st.selectbox(
-    "Current role",
-    [
-        "Student",
-        "PhD student",
-        "Researcher",
-        "Structural engineer",
-        "Professor",
-        "Other"
-    ]
-)
-
-country = st.text_input("Country where you currently work or study")
-
-
-
-
-inspection_experience = st.radio(
-    "Do you have experience with visual inspection of concrete structures?",
-    ["Yes", "No"],
-    key="inspection_experience"
-)
-
-
-experience = st.selectbox(
-    "Years of experience in structural engineering / inspection",
-    ["0–2", "3–5", "6–10", "More than 10"]
-)
-
-
-# answers = {}
-
-# #for case in CASES:
-
-# for case_index, case in enumerate(CASES):
-
-case_index = st.session_state.current_case_index
-case = CASES[case_index]
-answers = {}
-
-if case_index == 0:
-    st.header("Image Evaluation")
-
-    st.markdown("""
-For each case, you will see the original crack image and five AI-generated predictions.
-
-The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
-
-Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
-
-If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
-
-The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.
-""")
 
 case_dir = DATA_DIR / case
 original_path = case_dir / "original.png"
@@ -328,9 +311,6 @@ for start in range(0, len(items), NUM_COLS):
                 else:
                     st.warning(f"Missing overlay: {img_path}")
 
-#<img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:340%; border-radius:6px; display:block;MARGIN:AUTO">
-#<img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:10px; display:block; margin:0px;">          
-
 best_choice = st.session_state.get(
     f"best_selected_{case}",
     "None selected"
@@ -359,18 +339,6 @@ answers[case] = {
 st.markdown("<div style='margin-top:-10px;'></div>", unsafe_allow_html=True)
 
 col_progress, col_prev, col_next = st.columns([3, 1, 1])
-
-# with col_progress:
-#     st.markdown("<div style='margin-top:-25px;'></div>", unsafe_allow_html=True)
-#     st.markdown(
-#         f"""
-#         <div style="font-size:36px; font-weight:800; margin-bottom:4px;">
-#             Case {case_index + 1} of {len(CASES)}
-#         </div>
-#         """,
-#         unsafe_allow_html=True
-#     )
-#     st.progress((case_index + 1) / len(CASES))
 
 
 progress_percent = int(((case_index + 1) / len(CASES)) * 100)
@@ -440,19 +408,21 @@ if submitted:
             for label in acceptable_labels
         ]
 
-        if participant_name.strip():
-            participant_identifier = participant_name
+        participant_name_value = st.session_state.get("participant_name", "")
+
+        if participant_name_value.strip():
+            participant_identifier = participant_name_value
         else:
             participant_identifier = st.session_state.participant_id[:8]
 
         rows.append({
             "timestamp": datetime.now().isoformat(),
             "participant": participant_identifier,
-            "degree": degree,
-            "role": role,
-            "country": country,
-            "inspection_experience": inspection_experience,
-            "experience_years": experience,
+            "degree": st.session_state.get("degree", ""),
+            "role": st.session_state.get("role", ""),
+            "country": st.session_state.get("country", ""),
+            "inspection_experience": st.session_state.get("inspection_experience", ""),
+            "experience_years": st.session_state.get("experience", ""),
             "case": case,
             "best_prediction_label": best_label,
             "best_prediction_model": best_model,
