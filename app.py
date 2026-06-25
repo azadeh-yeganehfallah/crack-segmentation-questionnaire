@@ -180,11 +180,39 @@ if "current_case_index" not in st.session_state:
 if "answers" not in st.session_state:
     st.session_state.answers = {}
 
+if "participant_info" not in st.session_state:
+    st.session_state.participant_info = {}
+
 
 def select_best(case, label):
     st.session_state[f"best_selected_{case}"] = label
 
+def save_participant_info():
+    st.session_state.participant_info = {
+        "participant_name": st.session_state.get("participant_name", ""),
+        "degree": st.session_state.get("degree", ""),
+        "role": st.session_state.get("role", ""),
+        "country": st.session_state.get("country", ""),
+        "inspection_experience": st.session_state.get("inspection_experience", ""),
+        "experience": st.session_state.get("experience", "")
+    }
 
+
+def save_current_case_answer(case):
+    best_choice = st.session_state.get(
+        f"best_selected_{case}",
+        "None selected"
+    )
+
+    acceptable_choices = st.session_state.get(
+        f"acceptable_{case}",
+        []
+    )
+
+    st.session_state.answers[case] = {
+        "best_choice": best_choice,
+        "acceptable_choices": acceptable_choices
+    }
 
 
 
@@ -250,6 +278,7 @@ Therefore, we ask you to evaluate which prediction would be most useful and reli
         key="experience"
     )    
 
+    save_participant_info()
 
     
     st.header("Image Evaluation")
@@ -330,10 +359,7 @@ for start in range(0, len(items), NUM_COLS):
                 else:
                     st.warning(f"Missing overlay: {img_path}")
 
-best_choice = st.session_state.get(
-    f"best_selected_{case}",
-    "None selected"
-)
+save_current_case_answer(case)
 
 st.markdown(
     f"""
@@ -350,10 +376,7 @@ acceptable_choices = st.multiselect(
     key=f"acceptable_{case}",
     label_visibility="collapsed"
 )
-st.session_state.answers[case] = {
-    "best_choice": best_choice,
-    "acceptable_choices": acceptable_choices
-}
+save_current_case_answer(case)
 
 st.markdown("<div style='margin-top:-10px;'></div>", unsafe_allow_html=True)
 
@@ -384,6 +407,8 @@ with col_prev:
         type="primary",
         use_container_width=True
     ):
+        save_current_case_answer(case)
+        save_participant_info()
         st.session_state.current_case_index -= 1
         st.rerun()
 
@@ -394,6 +419,8 @@ with col_next:
         type="primary",
         use_container_width=True
     ):
+        save_current_case_answer(case)
+        save_participant_info()
         st.session_state.current_case_index += 1
         st.rerun()
 
@@ -408,7 +435,11 @@ else:
     submitted = False
 
 if submitted:
+    save_current_case_answer(case)
+    save_participant_info()
     rows = []
+    participant_info = st.session_state.get("participant_info", {})
+    participant_name_value = participant_info.get("participant_name", "")
 
     for case, ans in st.session_state.answers.items():
         case_mapping = st.session_state.case_label_to_model[case]
@@ -427,7 +458,7 @@ if submitted:
             for label in acceptable_labels
         ]
 
-        participant_name_value = st.session_state.get("participant_name", "")
+
 
         if participant_name_value.strip():
             participant_identifier = participant_name_value
@@ -437,11 +468,11 @@ if submitted:
         rows.append({
             "timestamp": datetime.now().isoformat(),
             "participant": participant_identifier,
-            "degree": st.session_state.get("degree", ""),
-            "role": st.session_state.get("role", ""),
-            "country": st.session_state.get("country", ""),
-            "inspection_experience": st.session_state.get("inspection_experience", ""),
-            "experience_years": st.session_state.get("experience", ""),
+            "degree": participant_info.get("degree", ""),
+            "role": participant_info.get("role", ""),
+            "country": participant_info.get("country", ""),
+            "inspection_experience": participant_info.get("inspection_experience", ""),
+            "experience_years": participant_info.get("experience", ""),
             "case": case,
             "best_prediction_label": best_label,
             "best_prediction_model": best_model,
