@@ -170,6 +170,9 @@ if "case_label_to_model" not in st.session_state:
         )
 
 
+if "current_case_index" not in st.session_state:
+    st.session_state.current_case_index = 0
+
 def select_best(case, label):
     st.session_state[f"best_selected_{case}"] = label
 
@@ -247,122 +250,149 @@ If more than one prediction is acceptable, you may also indicate additional acce
 The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.
 """)
 
+# answers = {}
+
+# #for case in CASES:
+
+# for case_index, case in enumerate(CASES):
+
+case_index = st.session_state.current_case_index
+case = CASES[case_index]
 answers = {}
 
-#for case in CASES:
+case_dir = DATA_DIR / case
+original_path = case_dir / "original.png"
 
-for case_index, case in enumerate(CASES):
-    case_dir = DATA_DIR / case
-    original_path = case_dir / "original.png"
+st.markdown("---")
+#st.subheader(f"Original image - {case.replace('_', ' ').title()}")
 
-    st.markdown("---")
-    #st.subheader(f"Original image - {case.replace('_', ' ').title()}")
+progress_value = (case_index + 1) / len(CASES)
 
-    progress_value = (case_index + 1) / len(CASES)
+st.markdown(
+    f"""
+    <div style="font-size:22px; font-weight:700; margin-bottom:6px;">
+        Case {case_index + 1} of {len(CASES)}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
-    st.markdown(
-        f"""
-        <div style="font-size:22px; font-weight:700; margin-bottom:6px;">
-            Case {case_index + 1} of {len(CASES)}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.progress(progress_value)
+st.progress(progress_value)
 
 
-    items = [("Original", original_path)]
+items = [("Original", original_path)]
 
-    for label in DISPLAY_LABELS:
-        real_model = st.session_state.case_label_to_model[case][label]
-        overlay_path = case_dir / MODEL_FILES[real_model]["overlay"]
-        items.append((label, overlay_path))
+for label in DISPLAY_LABELS:
+    real_model = st.session_state.case_label_to_model[case][label]
+    overlay_path = case_dir / MODEL_FILES[real_model]["overlay"]
+    items.append((label, overlay_path))
 
 
-    NUM_COLS = 3
+NUM_COLS = 3
 
-    for start in range(0, len(items), NUM_COLS):
-        row_items = items[start:start + NUM_COLS]
-        cols = st.columns(NUM_COLS)
+for start in range(0, len(items), NUM_COLS):
+    row_items = items[start:start + NUM_COLS]
+    cols = st.columns(NUM_COLS)
 
-        for idx, (label, img_path) in enumerate(row_items):
-            with cols[idx]:
-                if label == "Original":
-                    st.markdown(f"<div class='original-title'>Original image: {case}</div>",
-                                unsafe_allow_html=True)
-                    if img_path.exists():
-                        st.image(
-                            str(img_path),
-                            width=320
-                        )
-                    else:
-                        st.warning(f"Missing original image: {img_path}")
-
+    for idx, (label, img_path) in enumerate(row_items):
+        with cols[idx]:
+            if label == "Original":
+                st.markdown(f"<div class='original-title'>Original image: {case}</div>",
+                            unsafe_allow_html=True)
+                if img_path.exists():
+                    st.image(
+                        str(img_path),
+                        width=320
+                    )
                 else:
-                    selected = st.session_state.get(f"best_selected_{case}") == label
+                    st.warning(f"Missing original image: {img_path}")
 
-                    
-                    card_class = "selected-card" if selected else "normal-card"
-                    icon = "🟢" if selected else "⚪"  
+            else:
+                selected = st.session_state.get(f"best_selected_{case}") == label
 
-                    
-                    if img_path.exists():
-                        with open(img_path, "rb") as image_file:
+                
+                card_class = "selected-card" if selected else "normal-card"
+                icon = "🟢" if selected else "⚪"  
 
-                            # Render the custom-styled button
-                            if st.button(
-                                f"{icon} Prediction {label}",
-                                key=f"select_{case}_{label}"
-                            ):
-                                st.session_state[f"best_selected_{case}"] = label
-                                st.rerun()
+                
+                if img_path.exists():
+                    with open(img_path, "rb") as image_file:
 
-                            
-                            st.markdown(f"""
-                                <div class="{card_class}">
-                                    <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
-                                    style="width:100%; height:320px; object-fit:cover; border-radius:8px; display:block; margin:0px;">
-                                </div>
-                            """, unsafe_allow_html=True)
-                    else:
-                        st.warning(f"Missing overlay: {img_path}")
+                        # Render the custom-styled button
+                        if st.button(
+                            f"{icon} Prediction {label}",
+                            key=f"select_{case}_{label}"
+                        ):
+                            st.session_state[f"best_selected_{case}"] = label
+                            st.rerun()
+
+                        
+                        st.markdown(f"""
+                            <div class="{card_class}">
+                                <img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
+                                style="width:100%; height:320px; object-fit:cover; border-radius:8px; display:block; margin:0px;">
+                            </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.warning(f"Missing overlay: {img_path}")
 
 #<img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:340%; border-radius:6px; display:block;MARGIN:AUTO">
 #<img src="data:image/png;base64,{base64.b64encode(image_file.read()).decode()}" style="width:100%; border-radius:10px; display:block; margin:0px;">          
 
-    best_choice = st.session_state.get(
-        f"best_selected_{case}",
-        "None selected"
-    )
+best_choice = st.session_state.get(
+    f"best_selected_{case}",
+    "None selected"
+)
 
-    st.markdown(
-        f"""
-        <div style="font-size:20px; margin-top:10px; margin-bottom:6px;">
-            <strong>Optional:</strong> If more than one prediction is acceptable for <strong>{case}</strong>, please select all acceptable options:
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+st.markdown(
+    f"""
+    <div style="font-size:20px; margin-top:10px; margin-bottom:6px;">
+        <strong>Optional:</strong> If more than one prediction is acceptable for <strong>{case}</strong>, please select all acceptable options:
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
-    acceptable_choices = st.multiselect(
-        label="",
-        options=DISPLAY_LABELS,
-        key=f"acceptable_{case}",
-        label_visibility="collapsed"
-    )
-    answers[case] = {
-            "best_choice": best_choice,
-            "acceptable_choices": acceptable_choices
-        }
-
+acceptable_choices = st.multiselect(
+    label="",
+    options=DISPLAY_LABELS,
+    key=f"acceptable_{case}",
+    label_visibility="collapsed"
+)
+answers[case] = {
+        "best_choice": best_choice,
+        "acceptable_choices": acceptable_choices
+    }
 
 st.markdown("---")
 
-submitted = st.button(
-    "Submit Responses",
-    type="primary",
+col_prev, col_mid, col_next = st.columns([1, 2, 1])
+
+with col_prev:
+    if st.button("Previous", disabled=case_index == 0):
+        st.session_state.current_case_index -= 1
+        st.rerun()
+
+with col_mid:
+    st.markdown(
+        f"<div style='text-align:center; font-size:18px;'>Case {case_index + 1} of {len(CASES)}</div>",
+        unsafe_allow_html=True
     )
+
+with col_next:
+    if st.button("Next", disabled=case_index == len(CASES) - 1):
+        st.session_state.current_case_index += 1
+        st.rerun()
+
+
+if case_index == len(CASES) - 1:
+    st.markdown("---")
+    submitted = st.button(
+        "Submit Responses",
+        type="primary",
+    )
+else:
+    submitted = False
 
 if submitted:
     rows = []
