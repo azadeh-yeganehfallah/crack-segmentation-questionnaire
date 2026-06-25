@@ -75,6 +75,15 @@ div[data-testid="stButton"] button:hover {
     margin-bottom: 20px;        
 }
 
+            
+
+.original-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1f2937;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -211,6 +220,8 @@ st.header("Image Evaluation")
 st.markdown("""
 For each case, you will see the original crack image and five AI-generated predictions.
 
+The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
+
 Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
 
 If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
@@ -244,7 +255,9 @@ for case in CASES:
         for idx, (label, img_path) in enumerate(row_items):
             with cols[idx]:
                 if label == "Original":
-                    st.subheader(f"Original image: {case}")
+                    st.markdown(f"<div class='original-title'>Original image: {case}</div>",
+                                unsafe_allow_html=True                             
+                            )
                     if img_path.exists():
                         st.image(
                             str(img_path),
