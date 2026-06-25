@@ -360,17 +360,35 @@ st.markdown("<div style='margin-top:-10px;'></div>", unsafe_allow_html=True)
 
 col_progress, col_prev, col_next = st.columns([3, 1, 1])
 
+# with col_progress:
+#     st.markdown("<div style='margin-top:-25px;'></div>", unsafe_allow_html=True)
+#     st.markdown(
+#         f"""
+#         <div style="font-size:36px; font-weight:800; margin-bottom:4px;">
+#             Case {case_index + 1} of {len(CASES)}
+#         </div>
+#         """,
+#         unsafe_allow_html=True
+#     )
+#     st.progress((case_index + 1) / len(CASES))
+
+
+progress_percent = int(((case_index + 1) / len(CASES)) * 100)
+
 with col_progress:
-    st.markdown("<div style='margin-top:-25px;'></div>", unsafe_allow_html=True)
     st.markdown(
         f"""
-        <div style="font-size:36px; font-weight:800; margin-bottom:4px;">
-            Case {case_index + 1} of {len(CASES)}
+        <div style="transform: translateY(-18px);">
+            <div style="font-size:36px; font-weight:800; margin-bottom:8px;">
+                Case {case_index + 1} of {len(CASES)}
+            </div>
+            <div style="width:100%; background-color:#e5e7eb; border-radius:999px; height:8px; overflow:hidden;">
+                <div style="width:{progress_percent}%; background:#1f8ef1; height:100%; border-radius:999px;"></div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True
     )
-    st.progress((case_index + 1) / len(CASES))
 
 with col_prev:
     if st.button(
