@@ -186,7 +186,9 @@ Thank you very much for taking the time to participate. The questionnaire takes 
 
 Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions. 
 
-As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
+As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, 
+these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. 
+Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
 
 
 """)
@@ -243,7 +245,8 @@ For each case, you will see the original crack image and five AI-generated predi
 
 The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
 
-Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
+Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, 
+such as estimating crack width, crack length, and crack continuity.
 
 If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
 
@@ -263,44 +266,6 @@ answers = {}
 case_dir = DATA_DIR / case
 original_path = case_dir / "original.png"
 
-col_progress, col_buttons = st.columns([8, 2])
-
-with col_buttons:
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        if st.button(
-            "Previous",
-            disabled=case_index == 0,
-            type="primary",
-            use_container_width=True
-        ):
-            st.session_state.current_case_index -= 1
-            st.rerun()
-
-    with col2:
-        if st.button(
-            "Next",
-            disabled=case_index == len(CASES) - 1,
-            type="primary",
-            use_container_width=True
-        ):
-            st.session_state.current_case_index += 1
-            st.rerun()
-
-with col_progress:
-
-    st.markdown(
-        f"""
-        <div style="font-size:22px; font-weight:700; margin-bottom:6px;">
-            Case {case_index + 1} of {len(CASES)}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.progress((case_index + 1) / len(CASES))
 
 
 items = [("Original", original_path)]
@@ -386,6 +351,42 @@ answers[case] = {
         "best_choice": best_choice,
         "acceptable_choices": acceptable_choices
     }
+
+st.markdown("<div style='margin-top:18px;'></div>", unsafe_allow_html=True)
+
+col_progress, col_prev, col_next = st.columns([4, 1, 1])
+
+with col_progress:
+    st.markdown(
+        f"""
+        <div style="font-size:18px; font-weight:700; margin-bottom:4px;">
+            Case {case_index + 1} of {len(CASES)}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.progress((case_index + 1) / len(CASES))
+
+with col_prev:
+    if st.button(
+        "Previous",
+        disabled=case_index == 0,
+        type="primary",
+        use_container_width=True
+    ):
+        st.session_state.current_case_index -= 1
+        st.rerun()
+
+with col_next:
+    if st.button(
+        "Next",
+        disabled=case_index == len(CASES) - 1,
+        type="primary",
+        use_container_width=True
+    ):
+        st.session_state.current_case_index += 1
+        st.rerun()
+
 
 if case_index == len(CASES) - 1:
     st.markdown("---")
