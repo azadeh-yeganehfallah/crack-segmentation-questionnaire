@@ -177,9 +177,6 @@ if "case_label_to_model" not in st.session_state:
 if "current_case_index" not in st.session_state:
     st.session_state.current_case_index = 0
 
-if "participant_completed" not in st.session_state:
-    st.session_state.participant_completed = False
-
 if "answers" not in st.session_state:
     st.session_state.answers = {}
 
@@ -194,7 +191,8 @@ def select_best(case, label):
 case_index = st.session_state.current_case_index
 case = CASES[case_index]
 
-if not st.session_state.participant_completed:
+
+if case_index == 0:
     st.title("Expert Evaluation of Crack Segmentation Masks")
 
     st.markdown("""
@@ -203,44 +201,70 @@ This questionnaire is part of a research study aimed at evaluating the quality o
 Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
 
 Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions. 
+
+As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, 
+these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. 
+Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
 """)
 
     st.header("Participant Information")
 
-    with st.form("participant_form"):
-        participant_name = st.text_input("Name (optional)")
-        degree = st.selectbox(
-            "Education level",
-            ["Bachelor's degree", "Master's degree", "PhD", "Other"]
-        )
-        role = st.selectbox(
-            "Current role",
-            ["Student", "PhD student", "Researcher", "Structural engineer", "Professor", "Other"]
-        )
-        country = st.text_input("Country where you currently work or study")
-        inspection_experience = st.radio(
-            "Do you have experience with visual inspection of concrete structures?",
-            ["Yes", "No"]
-        )
-        experience = st.selectbox(
-            "Years of experience in structural engineering / inspection",
-            ["0–2", "3–5", "6–10", "More than 10"]
-        )
+    st.text_input(
+        "Name (optional)",
+        key="participant_name"
+    )
 
-        start = st.form_submit_button("Start Questionnaire")
+    st.selectbox(
+        "Education level",
+        ["Bachelor's degree", "Master's degree", "PhD", "Other"],
+        key="degree"
+    )
 
-    if start:
-        st.session_state.participant_name = participant_name
-        st.session_state.degree = degree
-        st.session_state.role = role
-        st.session_state.country = country
-        st.session_state.inspection_experience = inspection_experience
-        st.session_state.experience = experience
-        st.session_state.participant_completed = True
-        st.rerun()
+    st.selectbox(
+        "Current role",
+        [
+            "Student",
+            "PhD student",
+            "Researcher",
+            "Structural engineer",
+            "Professor",
+            "Other"
+        ],
+        key="role"
+    )
 
-    st.stop()
+    st.text_input(
+        "Country where you currently work or study",
+        key="country"
+    )
 
+    st.radio(
+        "Do you have experience with visual inspection of concrete structures?",
+        ["Yes", "No"],
+        key="inspection_experience"
+    )
+
+    st.selectbox(
+        "Years of experience in structural engineering / inspection",
+        ["0–2", "3–5", "6–10", "More than 10"],
+        key="experience"
+    )    
+
+
+    
+    st.header("Image Evaluation")
+
+    st.markdown("""
+For each case, you will see the original crack image and five AI-generated predictions.
+
+The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
+
+Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
+
+If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
+
+The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.
+""")
 
 
 
