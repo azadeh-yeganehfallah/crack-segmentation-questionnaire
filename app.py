@@ -273,12 +273,15 @@ st.markdown(f"""
 acceptable_choices = st.multiselect(
     label="",
     options=DISPLAY_LABELS,
+    default=st.session_state.answers.get(case, {}).get("acceptable_choices", []),
     key=f"acceptable_{case}",
     label_visibility="collapsed"
 )
 
-# Constantly save answer choices
-save_current_case_answer(case)
+st.session_state.answers[case] = {
+    "best_choice": st.session_state.get(f"best_selected_{case}", "None selected"),
+    "acceptable_choices": acceptable_choices
+}
 st.markdown("<div style='margin-top:-10px;'></div>", unsafe_allow_html=True)
 
 # --- PROGRESS BAR AND CONTROL LAYOUT ---
