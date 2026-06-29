@@ -330,6 +330,9 @@ if submitted:
     save_current_case_answer(case)
     participant_info = st.session_state.get("participant_info", {})
 
+    rows = []
+    participant_name_value = participant_info.get("participant_name", "")
+
     for case_item in CASES:
         ans = st.session_state.answers.get(
             case_item,
