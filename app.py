@@ -149,6 +149,9 @@ if "answers" not in st.session_state:
 if "participant_info" not in st.session_state:
     st.session_state.participant_info = {}
 
+if "info_submitted" not in st.session_state:
+    st.session_state.info_submitted = False
+
 # --- CORE SAVE FUNCTIONS ---
 def save_participant_info():
     st.session_state.participant_info = {
@@ -169,6 +172,32 @@ def save_current_case_answer(case_name):
     }
 
 
+# --- PARTICIPANT INFORMATION PAGE ---
+if not st.session_state.info_submitted:
+    st.title("Expert Evaluation of Crack Segmentation Masks")
+
+    st.markdown("""
+    This questionnaire is part of a research study aimed at evaluating the quality of crack segmentation results produced by deep learning models.
+    Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
+    Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions.
+    """)
+
+    st.header("Participant Information")
+
+    st.text_input("Name (optional)", key="participant_name")
+    st.selectbox("Education level", ["Bachelor's degree", "Master's degree", "PhD", "Other"], key="degree")
+    st.selectbox("Current role", ["Student", "PhD student", "Researcher", "Structural engineer", "Engineer", "Professor", "Other"], key="role")
+    st.text_input("Country where you currently work or study", key="country")
+    st.radio("Do you have experience with visual inspection of concrete structures?", ["Yes", "No"], key="inspection_experience")
+    st.selectbox("Years of experience with visual inspection of concrete structures", ["0–2", "3–5", "6–10", "More than 10"], key="experience")
+
+    if st.button("Start Questionnaire", type="primary"):
+        save_participant_info()
+        st.session_state.info_submitted = True
+        st.rerun()
+
+    st.stop()
+
 # --- INDEX BOUNDS ENFORCEMENT ---
 case_index = st.session_state.current_case_index
 if case_index < 0:
@@ -182,25 +211,6 @@ case = CASES[case_index]
 
 # --- INTRO & DEMOGRAPHICS PANEL ---
 if case_index == 0:
-    st.title("Expert Evaluation of Crack Segmentation Masks")
-    st.markdown("""
-    This questionnaire is part of a research study aimed at evaluating the quality of crack segmentation results produced by deep learning models.
-    Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
-    Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions. 
-    As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
- """)
-
-    st.header("Participant Information")
-    st.text_input("Name (optional)", key="participant_name")
-    st.selectbox("Education level", ["Bachelor's degree", "Master's degree", "PhD", "Other"], key="degree")
-    st.selectbox("Current role", ["Student", "PhD student", "Researcher", "Structural engineer", "Engineer", "Professor", "Other"], key="role")
-    st.text_input("Country where you currently work or study", key="country")
-    st.radio("Do you have experience with visual inspection of concrete structures?", ["Yes", "No"], key="inspection_experience")
-    st.selectbox("Years of experience with visual inspection of concrete structures", ["0–2", "3–5", "6–10", "More than 10"], key="experience")    
-    
-    # Save the information immediately after widgets render
-    save_participant_info()
-
     st.header("Image Evaluation")
     st.markdown("""
     For each case, you will see the original crack image and five AI-generated predictions.
@@ -313,19 +323,12 @@ else:
     submitted = False
 
 if submitted:
-    
-    participant_info = {
-        "participant_name": st.session_state.get("participant_name", ""),
-        "degree": st.session_state.get("degree", ""),
-        "role": st.session_state.get("role", ""),
-        "country": st.session_state.get("country", ""),
-        "inspection_experience": st.session_state.get("inspection_experience", ""),
-        "experience": st.session_state.get("experience", "")
-    }
-    
+
+    st.write(st.session_state)
+    st.write(st.session_state.get("participant_info", {}))
+
     save_current_case_answer(case)
-    rows = []
-    participant_name_value = participant_info.get("participant_name", "")
+    participant_info = st.session_state.get("participant_info", {})
 
     for case_item in CASES:
         ans = st.session_state.answers.get(
@@ -351,11 +354,11 @@ if submitted:
         rows.append({
             "timestamp": datetime.now(ZoneInfo("Europe/Rome")).isoformat(),
             "participant": participant_identifier,
-            "degree": participant_info["degree"],
-            "role": participant_info["role"],
-            "country": participant_info["country"],
-            "inspection_experience": participant_info["inspection_experience"],
-            "experience_years": participant_info["experience"],  # Maps correctly to 'experience'
+            "degree": participant_info.get("degree", ""),
+            "role": participant_info.get("role", ""),
+            "country": participant_info.get("country", ""),
+            "inspection_experience": participant_info.get("inspection_experience", ""),
+            "experience_years": participant_info.get("experience", ""),
             "case": case_item,
             "best_prediction_label": best_label,
             "best_prediction_model": best_model,
@@ -392,7 +395,6 @@ if submitted:
     except Exception as e:
         st.error("There was an error while saving your responses.")
         st.exception(e)
-
 
 
 
