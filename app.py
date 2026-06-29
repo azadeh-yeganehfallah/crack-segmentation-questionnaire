@@ -324,33 +324,38 @@ if submitted:
         "experience": st.session_state.get("experience", "")
     }
 
-    st.session_state.participant_info = participant_info
-
     rows = []
-
     participant_name_value = participant_info.get("participant_name", "")
 
     for case_item in CASES:
-        ans = st.session_state.answers.get(case_item, {"best_choice": "None selected", "acceptable_choices": []})
+        ans = st.session_state.answers.get(
+            case_item,
+            {"best_choice": "None selected", "acceptable_choices": []}
+        )
+
         case_mapping = st.session_state.case_label_to_model[case_item]
         mapping_json = json.dumps(case_mapping)
 
         best_label = ans["best_choice"]
         best_model = "None selected" if best_label == "None selected" else case_mapping[best_label]
-        
+
         acceptable_labels = ans["acceptable_choices"]
         acceptable_models = [case_mapping[lbl] for lbl in acceptable_labels]
 
-        participant_identifier = participant_name_value.strip() if participant_name_value.strip() else st.session_state.participant_id[:8]
+        participant_identifier = (
+            participant_name_value.strip()
+            if participant_name_value.strip()
+            else st.session_state.participant_id[:8]
+        )
 
         rows.append({
-            "timestamp": datetime.now(ZoneInfo("Europe/Rome")).isoformat(),
+            "timestamp": datetime.now().isoformat(),
             "participant": participant_identifier,
-            "degree": participant_info.get("degree", ""),
-            "role": participant_info.get("role", ""),
-            "country": participant_info.get("country", ""),
-            "inspection_experience": participant_info.get("inspection_experience", ""),
-            "experience_years": participant_info.get("experience", ""),
+            "degree": participant_info["degree"],
+            "role": participant_info["role"],
+            "country": participant_info["country"],
+            "inspection_experience": participant_info["inspection_experience"],
+            "experience_years": participant_info["experience"],
             "case": case_item,
             "best_prediction_label": best_label,
             "best_prediction_model": best_model,
