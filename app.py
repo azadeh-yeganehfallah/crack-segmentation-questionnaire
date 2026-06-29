@@ -164,13 +164,24 @@ def save_participant_info():
     }
 
 def save_current_case_answer(case_name):
-    best_choice = st.session_state.get(f"best_selected_{case_name}", "None selected")
-    acceptable_choices = st.session_state.get(f"acceptable_{case_name}", [])
+    best_choice = st.session_state.get(
+        f"best_selected_{case_name}",
+        "None selected"
+    )
+
+    acceptable_choices = st.session_state.get(
+        f"acceptable_{case_name}",
+        []
+    )
+
+
+    if best_choice != "None selected" and best_choice not in acceptable_choices:
+        acceptable_choices = [best_choice] + acceptable_choices
+
     st.session_state.answers[case_name] = {
         "best_choice": best_choice,
         "acceptable_choices": acceptable_choices
     }
-
 
 # --- PARTICIPANT INFORMATION PAGE ---
 if not st.session_state.info_submitted:
