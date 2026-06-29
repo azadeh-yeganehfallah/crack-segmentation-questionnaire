@@ -349,7 +349,7 @@ if submitted:
         )
 
         rows.append({
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(ZoneInfo("Europe/Rome")).isoformat(),
             "participant": participant_identifier,
             "degree": participant_info["degree"],
             "role": participant_info["role"],
