@@ -300,8 +300,7 @@ with col_progress:
 with col_prev:
     # Button is disabled completely on Case 1 (index 0)
     if st.button("Previous", disabled=(case_index == 0), type="primary", use_container_width=True):
-        if case_index == 0:
-            save_participant_info()
+
         save_current_case_answer(case)
         st.session_state.current_case_index -= 1
         st.rerun()
@@ -309,8 +308,7 @@ with col_prev:
 with col_next:
     # Button is disabled completely on Case 20 (index 19)
     if st.button("Next", disabled=(case_index == len(CASES) - 1), type="primary", use_container_width=True):
-        if case_index == 0:
-            save_participant_info()
+
         save_current_case_answer(case)
         st.session_state.current_case_index += 1
         st.rerun()
@@ -323,10 +321,6 @@ else:
     submitted = False
 
 if submitted:
-
-    st.write(st.session_state)
-    st.write(st.session_state.get("participant_info", {}))
-
     save_current_case_answer(case)
     participant_info = st.session_state.get("participant_info", {})
 
