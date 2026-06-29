@@ -313,8 +313,7 @@ else:
     submitted = False
 
 if submitted:
-    save_current_case_answer(case)
-
+    
     participant_info = {
         "participant_name": st.session_state.get("participant_name", ""),
         "degree": st.session_state.get("degree", ""),
@@ -323,7 +322,8 @@ if submitted:
         "inspection_experience": st.session_state.get("inspection_experience", ""),
         "experience": st.session_state.get("experience", "")
     }
-
+    
+    save_current_case_answer(case)
     rows = []
     participant_name_value = participant_info.get("participant_name", "")
 
@@ -355,7 +355,7 @@ if submitted:
             "role": participant_info["role"],
             "country": participant_info["country"],
             "inspection_experience": participant_info["inspection_experience"],
-            "experience_years": participant_info["experience"],
+            "experience_years": participant_info["experience"],  # Maps correctly to 'experience'
             "case": case_item,
             "best_prediction_label": best_label,
             "best_prediction_model": best_model,
@@ -392,6 +392,7 @@ if submitted:
     except Exception as e:
         st.error("There was an error while saving your responses.")
         st.exception(e)
+
 
 
 
