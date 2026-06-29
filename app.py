@@ -8,6 +8,7 @@ import json
 import gspread
 from google.oauth2.service_account import Credentials
 import base64
+from zoneinfo import ZoneInfo
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -152,11 +153,11 @@ if "participant_info" not in st.session_state:
 def save_participant_info():
     st.session_state.participant_info = {
         "participant_name": st.session_state.get("participant_name", ""),
-        "degree": st.session_state.get("degree", "Bachelor's degree"),
-        "role": st.session_state.get("role", "Student"),
+        "degree": st.session_state.get("degree", ""),
+        "role": st.session_state.get("role", ""),
         "country": st.session_state.get("country", ""),
-        "inspection_experience": st.session_state.get("inspection_experience", "Yes"),
-        "experience": st.session_state.get("experience", "0–2")
+        "inspection_experience": st.session_state.get("inspection_experience", ""),
+        "experience": st.session_state.get("experience", "")
     }
 
 def save_current_case_answer(case_name):
@@ -185,15 +186,17 @@ if case_index == 0:
     st.markdown("""
     This questionnaire is part of a research study aimed at evaluating the quality of crack segmentation results produced by deep learning models.
     Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
-    """)
+    Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions. 
+    As structural engineers, inspectors, or potential end-users of such AI tools, your opinion is very important. In practice, these segmentation results may be used as the basis for extracting crack-related information such as crack width, length, and continuity. Therefore, we ask you to evaluate which prediction would be most useful and reliable from an inspection point of view.
+ """)
 
     st.header("Participant Information")
     st.text_input("Name (optional)", key="participant_name")
     st.selectbox("Education level", ["Bachelor's degree", "Master's degree", "PhD", "Other"], key="degree")
-    st.selectbox("Current role", ["Student", "PhD student", "Researcher", "Structural engineer", "Professor", "Other"], key="role")
+    st.selectbox("Current role", ["Student", "PhD student", "Researcher", "Structural engineer", "Engineer", "Professor", "Other"], key="role")
     st.text_input("Country where you currently work or study", key="country")
     st.radio("Do you have experience with visual inspection of concrete structures?", ["Yes", "No"], key="inspection_experience")
-    st.selectbox("Years of experience in structural engineering / inspection", ["0–2", "3–5", "6–10", "More than 10"], key="experience")    
+    st.selectbox("Years of experience with visual inspection of concrete structures", ["0–2", "3–5", "6–10", "More than 10"], key="experience")    
     
     # Save the information immediately after widgets render
     save_participant_info()
@@ -201,8 +204,10 @@ if case_index == 0:
     st.header("Image Evaluation")
     st.markdown("""
     For each case, you will see the original crack image and five AI-generated predictions.
-    The questionnaire includes 20 cases. Please select the prediction that you consider most representative of the actual crack.
-    """)
+    The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
+    Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
+    If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
+    The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.""")
 
 # --- MAIN QUESTIONNAIRE GRID ---
 case_dir = DATA_DIR / case
@@ -309,8 +314,20 @@ else:
 
 if submitted:
     save_current_case_answer(case)
+
+    participant_info = {
+        "participant_name": st.session_state.get("participant_name", ""),
+        "degree": st.session_state.get("degree", ""),
+        "role": st.session_state.get("role", ""),
+        "country": st.session_state.get("country", ""),
+        "inspection_experience": st.session_state.get("inspection_experience", ""),
+        "experience": st.session_state.get("experience", "")
+    }
+
+    st.session_state.participant_info = participant_info
+
     rows = []
-    participant_info = st.session_state.get("participant_info", {})
+
     participant_name_value = participant_info.get("participant_name", "")
 
     for case_item in CASES:
@@ -327,7 +344,7 @@ if submitted:
         participant_identifier = participant_name_value.strip() if participant_name_value.strip() else st.session_state.participant_id[:8]
 
         rows.append({
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(ZoneInfo("Europe/Rome")).isoformat(),
             "participant": participant_identifier,
             "degree": participant_info.get("degree", ""),
             "role": participant_info.get("role", ""),
