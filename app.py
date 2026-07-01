@@ -190,8 +190,8 @@ if not st.session_state.info_submitted:
 
     st.markdown("""
     This questionnaire is part of a research study aimed at evaluating the quality of crack segmentation results produced by deep learning models.
-    Thank you very much for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
-    Your responses will be used only for research purposes and only to assess the quality of AI-based crack segmentation predictions.
+    Thank you for taking the time to participate. The questionnaire takes approximately 10 minutes to complete.
+    Your responses will be used exclusively for research purposes.
     """)
 
     st.header("Participant Information")
@@ -227,14 +227,29 @@ if case_index == 0:
     st.header("Image Evaluation")
     st.markdown("""
     For each case, you will see the original crack image and five AI-generated predictions.
-    The questionnaire includes 15 randomly selected cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
-    Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
-    If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
-    The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.""")
+    Please evaluate the predictions based on how accurately they match the visible crack region in the original image.
+    The goal is **not** to judge structural severity or crack risk. Instead, the goal is to assess which prediction best represents the actual visible crack geometry.
+
+    When selecting the best prediction, please consider:
+
+    - Whether the prediction follows the actual crack location.
+    - Whether the predicted crack thickness is close to the visible crack thickness.
+    - Whether the crack continuity and shape are correctly captured.
+    - Whether small but visible cracks are detected.
+    - Whether the prediction avoids false crack regions caused by shadows, stains, texture, or surface defects.
+
+    Please imagine that the selected prediction will later be used to estimate crack width, crack length, and crack continuity. Therefore, overly thick predictions or predictions that miss fine visible cracks should not be preferred unless they better match the actual crack geometry.
+
+    The questionnaire includes 15 randomly selected cases. The prediction labels (A–E) are randomized for each case.
+    """)
 
 # --- MAIN QUESTIONNAIRE GRID ---
 case_dir = DATA_DIR / case
 original_path = case_dir / "original.png"
+st.markdown("""
+### Question
+Which prediction best matches the visible crack geometry in the original image?
+""")
 
 items = [("Original", original_path)]
 for label in DISPLAY_LABELS:
