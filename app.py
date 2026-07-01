@@ -178,26 +178,10 @@ def save_current_case_answer(case_name):
         []
     )
 
-
-    acceptable_choices = [
-    choice for choice in acceptable_choices
-    if choice == best_choice or choice != st.session_state.answers.get(case_name, {}).get("best_choice")
-    ]
-
-    if best_choice != "None selected":
-        acceptable_choices = [
-            choice for choice in acceptable_choices
-            if choice != best_choice
-        ]
-        acceptable_choices = [best_choice] + acceptable_choices
-
     st.session_state.answers[case_name] = {
         "best_choice": best_choice,
         "acceptable_choices": acceptable_choices
     }
-
-    st.session_state[f"acceptable_{case_name}"] = acceptable_choices
-
     
 
 # --- PARTICIPANT INFORMATION PAGE ---
@@ -280,7 +264,10 @@ for start in range(0, len(items), NUM_COLS):
                     with open(img_path, "rb") as image_file:
                         if st.button(f"{icon} Prediction {label}", key=f"select_{case}_{label}"):
                             st.session_state[f"best_selected_{case}"] = label
-                            save_current_case_answer(case)
+                            st.session_state.answers[case] = {
+                                "best_choice": label,
+                                "acceptable_choices": [label]
+                            }
                             st.rerun()
 
                         st.markdown(f"""
