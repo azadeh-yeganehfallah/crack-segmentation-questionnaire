@@ -246,10 +246,7 @@ if case_index == 0:
 # --- MAIN QUESTIONNAIRE GRID ---
 case_dir = DATA_DIR / case
 original_path = case_dir / "original.png"
-st.markdown("""
-### Question
-Which prediction best matches the visible crack geometry in the original image?
-""")
+st.markdown("""Which prediction best matches the visible crack geometry in the original image?""")
 
 items = [("Original", original_path)]
 for label in DISPLAY_LABELS:
