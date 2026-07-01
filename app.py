@@ -381,8 +381,8 @@ if submitted:
             "case": case_item,
             "best_prediction_label": best_label,
             "best_prediction_model": best_model,
-            "acceptable_prediction_labels": ", ".join(acceptable_labels+[best_label]),
-            "acceptable_prediction_models": ", ".join(acceptable_models+([best_model])),
+            "acceptable_prediction_labels": ", ".join(acceptable_labels),
+            "acceptable_prediction_models": ", ".join(acceptable_models),
             "mapping": mapping_json
         })
 
