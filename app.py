@@ -168,7 +168,12 @@ def save_participant_info():
     }
 
 def save_current_case_answer(case_name):
-    best_choice = st.session_state.get(
+    previous_best = st.session_state.answers.get(case_name, {}).get(
+        "best_choice",
+        "None selected"
+    )
+
+    current_best = st.session_state.get(
         f"best_selected_{case_name}",
         "None selected"
     )
@@ -178,14 +183,22 @@ def save_current_case_answer(case_name):
         []
     )
 
+    # remove previous best if user changed the best answer
+    if previous_best != current_best and previous_best in acceptable_choices:
+        acceptable_choices.remove(previous_best)
 
-    if best_choice != "None selected" and best_choice not in acceptable_choices:
-        acceptable_choices = [best_choice] + acceptable_choices
+    # add current best automatically
+    if current_best != "None selected" and current_best not in acceptable_choices:
+        acceptable_choices = [current_best] + acceptable_choices
 
     st.session_state.answers[case_name] = {
-        "best_choice": best_choice,
+        "best_choice": current_best,
         "acceptable_choices": acceptable_choices
     }
+
+    st.session_state[f"acceptable_{case_name}"] = acceptable_choices
+
+
 
 # --- PARTICIPANT INFORMATION PAGE ---
 if not st.session_state.info_submitted:
