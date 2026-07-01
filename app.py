@@ -223,6 +223,7 @@ elif case_index >= len(ACTIVE_CASES):
     st.session_state.current_case_index = len(ACTIVE_CASES) - 1
 
 case = ACTIVE_CASES[case_index]
+display_case_name=f'{case_index + 1:02d}'
 
 # --- INTRO & DEMOGRAPHICS PANEL ---
 if case_index == 0:
@@ -252,7 +253,7 @@ for start in range(0, len(items), NUM_COLS):
     for idx, (label, img_path) in enumerate(row_items):
         with cols[idx]:
             if label == "Original":
-                st.markdown(f"<div class='original-title'>Original image: {case}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='original-title'>Original image: {display_case_name}</div>",unsafe_allow_html=True)
                 if img_path.exists():
                     st.image(str(img_path), width=320)
                 else:
@@ -281,7 +282,7 @@ for start in range(0, len(items), NUM_COLS):
 # --- ACCEPTABLE MULTI-SELECT ---
 st.markdown(f"""
 <div style="font-size:20px; margin-top:10px; margin-bottom:6px;">
-    <strong>Optional:</strong> If more than one prediction is acceptable for <strong>{case}</strong>, please select all acceptable options:
+    <strong>Optional:</strong> If more than one prediction is acceptable for <strong>{display_case_name}</strong>, please select all acceptable options:
 </div>
 """, unsafe_allow_html=True)
 
