@@ -9,6 +9,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import base64
 from zoneinfo import ZoneInfo
+from case_selector import select_random_cases
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -112,12 +113,7 @@ def connect_to_google_sheet():
 REAL_MODELS = ["model_01", "model_02", "model_03", "model_04", "model_05"]
 DISPLAY_LABELS = ["A", "B", "C", "D", "E"]
 
-CASES = [
-    "case_01", "case_02", "case_03", "case_04", "case_05",
-    "case_06", "case_07", "case_08", "case_09", "case_10",
-    "case_11", "case_12", "case_13", "case_14", "case_15",
-    "case_16", "case_17", "case_18", "case_19", "case_20"
-]
+CASES = [f"case_{i:02d}" for i in range(1, 46)]
 
 MODEL_FILES = {
     "model_01": {"mask": "mask_1.png", "overlay": "overlay_1.png"},
@@ -131,9 +127,15 @@ MODEL_FILES = {
 if "participant_id" not in st.session_state:
     st.session_state.participant_id = str(uuid.uuid4())
 
+
+if "selected_cases" not in st.session_state:
+    st.session_state.selected_cases = select_random_cases()
+
+ACTIVE_CASES = st.session_state.selected_cases
+
 if "case_label_to_model" not in st.session_state:
     st.session_state.case_label_to_model = {}
-    for case_item in CASES:
+    for case_item in ACTIVE_CASES:
         shuffled_models = REAL_MODELS.copy()
         random.shuffle(shuffled_models)
         st.session_state.case_label_to_model[case_item] = dict(
@@ -151,6 +153,8 @@ if "participant_info" not in st.session_state:
 
 if "info_submitted" not in st.session_state:
     st.session_state.info_submitted = False
+
+
 
 # --- CORE SAVE FUNCTIONS ---
 def save_participant_info():
@@ -214,18 +218,18 @@ case_index = st.session_state.current_case_index
 if case_index < 0:
     case_index = 0
     st.session_state.current_case_index = 0
-elif case_index >= len(CASES):
-    case_index = len(CASES) - 1
-    st.session_state.current_case_index = len(CASES) - 1
+elif case_index >= len(ACTIVE_CASES):
+    case_index = len(ACTIVE_CASES) - 1
+    st.session_state.current_case_index = len(ACTIVE_CASES) - 1
 
-case = CASES[case_index]
+case = ACTIVE_CASES[case_index]
 
 # --- INTRO & DEMOGRAPHICS PANEL ---
 if case_index == 0:
     st.header("Image Evaluation")
     st.markdown("""
     For each case, you will see the original crack image and five AI-generated predictions.
-    The questionnaire includes 20 cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
+    The questionnaire includes 15 randomly selected cases. The prediction labels (A–E) are randomized for each case, so the same label does not necessarily refer to the same model across different cases.
     Please select the prediction that you consider most representative of the actual crack. Imagine that this prediction would be used as the basis for further structural inspection analysis, such as estimating crack width, crack length, and crack continuity.
     If more than one prediction is acceptable, you may also indicate additional acceptable predictions for that case.
     The predictions may differ in the extent, continuity, shape, width, and level of detail of the detected crack region.""")
@@ -297,13 +301,13 @@ st.markdown("<div style='margin-top:-10px;'></div>", unsafe_allow_html=True)
 
 # --- PROGRESS BAR AND CONTROL LAYOUT ---
 col_progress, col_prev, col_next = st.columns([3, 1, 1])
-progress_percent = int(((case_index + 1) / len(CASES)) * 100)
+progress_percent = int(((case_index + 1) / len(ACTIVE_CASES)) * 100)
 
 with col_progress:
     st.markdown(f"""
         <div style="transform: translateY(-18px);">
             <div style="font-size:36px; font-weight:800; margin-bottom:8px;">
-                Case {case_index + 1} of {len(CASES)}
+                Case {case_index + 1} of {len(ACTIVE_CASES)}
             </div>
             <div style="width:100%; background-color:#e5e7eb; border-radius:999px; height:8px; overflow:hidden;">
                 <div style="width:{progress_percent}%; background:#1f8ef1; height:100%; border-radius:999px;"></div>
@@ -321,14 +325,14 @@ with col_prev:
 
 with col_next:
     # Button is disabled completely on Case 20 (index 19)
-    if st.button("Next", disabled=(case_index == len(CASES) - 1), type="primary", use_container_width=True):
+    if st.button("Next", disabled=(case_index == len(ACTIVE_CASES) - 1), type="primary", use_container_width=True):
 
         save_current_case_answer(case)
         st.session_state.current_case_index += 1
         st.rerun()
 
 # --- SUBMISSION LOGIC ---
-if case_index == len(CASES) - 1:
+if case_index == len(ACTIVE_CASES) - 1:
     st.markdown("---")
     submitted = st.button("Submit Responses", type="primary")
 else:
@@ -341,7 +345,7 @@ if submitted:
     rows = []
     participant_name_value = participant_info.get("participant_name", "")
 
-    for case_item in CASES:
+    for case_item in ACTIVE_CASES:
         ans = st.session_state.answers.get(
             case_item,
             {"best_choice": "None selected", "acceptable_choices": []}
