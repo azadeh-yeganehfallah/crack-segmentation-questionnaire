@@ -10,8 +10,7 @@ CURRENT_COUNTS = {
     "case_16": 3, "case_17": 10, "case_18": 8, "case_19": 9, "case_20": 7,
     "case_21": 3, "case_22": 5, "case_23": 8, "case_24": 3, "case_25": 5,
     "case_26": 8, "case_27": 4, "case_28": 9, "case_29": 5,
-    # اگر case_30 تا case_45 هنوز اینجا نیستند، یعنی 0 بار دیده شده‌اند
-}
+    }
 
 
 def select_random_cases():
